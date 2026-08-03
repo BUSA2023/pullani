@@ -26,7 +26,14 @@
             display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; 
             -webkit-justify-content: center; justify-content: center; flex-direction: column; cursor: pointer;
         }
-        .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; }
+        .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
+        .start-btn:hover { transform: scale(1.05); }
+
+        /* പുതിയ റിസൾട്ട് വരുമ്പോഴുള്ള സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
+        #flash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 9998; opacity: 0; pointer-events: none;
+        }
 
         .view-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -43,17 +50,17 @@
 
         /* --- PAGE 1: TOTAL SCORE --- */
         .dashboard-content { display: -webkit-flex; display: flex; -webkit-justify-content: space-around; justify-content: space-around; -webkit-align-items: center; align-items: center; flex: 1; padding: 0 50px; }
-        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 50px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); }
+        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 50px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .team-name { font-size: 50px; font-weight: bold; margin-bottom: 10px; }
         .team-name.team-a { color: #fb7185; text-shadow: 0 0 20px rgba(251, 113, 133, 0.4); }
         .team-name.team-b { color: #818cf8; text-shadow: 0 0 20px rgba(129, 140, 248, 0.4); }
         .huge-points { font-size: 15vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 100px; height: 100px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 30px; font-weight: 900; color: #64748b; font-style: italic; }
+        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 100px; height: 100px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 30px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
         /* --- PAGE 2: RESULTS --- */
         .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
         .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; }
-        .res-card.newest { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+        .res-card.newest { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2); background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(15,23,42,0.9) 100%); }
         .rc-title { font-size: 22px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between;}
         .rc-cat { font-size: 13px; background: #1e293b; padding: 4px 8px; border-radius: 5px; color: #94a3b8; }
         .rc-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; }
@@ -85,7 +92,6 @@
         .pt-table th, .pt-table td { padding: 9px 10px; text-align: center; font-size: 19px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 16px; border-bottom: 2px solid #334155; }
         
-        /* Removed scrolling to fit all items perfectly */
         .no-scroll-wrapper { flex: 1; background: rgba(0,0,0,0.4); border-radius: 0 0 15px 15px; overflow: hidden; }
         
         .t-left { text-align: left !important; padding-left: 20px !important; }
@@ -96,19 +102,21 @@
         .pt-team-b { color: #818cf8; font-size: 22px !important; }
         .br-left { border-left: 2px solid #334155; }
 
-        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
         #toast.show { transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <!-- Updated sounds: Attractive notification chime for score update, Shocking/Epic cinematic sound for new results -->
-    <audio id="sound-score" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
-    <audio id="sound-result" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
+    <!-- 100% Working Audio Links from Pixabay CDN -->
+    <audio id="sound-score" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3" preload="auto"></audio>
+    <audio id="sound-result" src="https://cdn.pixabay.com/download/audio/2022/10/09/audio_2d8b5a0e36.mp3?filename=cinematic-hit-121980.mp3" preload="auto"></audio>
+
+    <div id="flash-screen"></div>
 
     <div id="start-overlay" onclick="startApp()">
         <button class="start-btn">Start TV Display</button>
-        <p style="margin-top:20px; font-size:20px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക (For Audio)</p>
+        <p style="margin-top:20px; font-size:20px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക (For Audio & Start)</p>
     </div>
 
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
@@ -262,13 +270,23 @@
 
     <script>
         var appStarted = false;
+        
         function startApp() {
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
-            var s1 = document.getElementById('sound-score'); var s2 = document.getElementById('sound-result');
-            s1.volume = 0; s1.play().catch(function(){}); setTimeout(function(){ s1.pause(); s1.volume = 1; }, 100);
-            s2.volume = 0; s2.play().catch(function(){}); setTimeout(function(){ s2.pause(); s2.volume = 1; }, 100);
+            // ഫോഴ്സ് ഓഡിയോ അൺലോക്ക് (TV ബ്രൗസറുകൾക്കായി)
+            var s1 = document.getElementById('sound-score'); 
+            var s2 = document.getElementById('sound-result');
+            
+            s1.muted = true; s2.muted = true;
+            var p1 = s1.play(); var p2 = s2.play();
+            
+            setTimeout(function() {
+                s1.pause(); s2.pause();
+                s1.muted = false; s2.muted = false;
+                s1.currentTime = 0; s2.currentTime = 0;
+            }, 100);
             
             appStarted = true; 
             renderAll();
@@ -276,17 +294,46 @@
 
         function playSound(type) {
             if (!appStarted) return;
-            try { var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); audio.currentTime = 0; audio.play(); } catch(e) {}
+            try { 
+                var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); 
+                audio.currentTime = 0; 
+                audio.volume = 1;
+                audio.play(); 
+            } catch(e) { console.error("Audio Play Error:", e); }
         }
         
+        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & തനിയെ പേജ് മാറുന്ന ഫംഗ്ഷൻ
+        function triggerEpicReveal() {
+            playSound('result');
+            var flash = document.getElementById('flash-screen');
+            flash.style.transition = 'none';
+            flash.style.opacity = '1';
+            
+            setTimeout(function() {
+                flash.style.transition = 'opacity 1.5s ease-out';
+                flash.style.opacity = '0';
+            }, 50);
+            
+            showToast("🔥 പുതിയ റിസൾട്ട് പ്രസിദ്ധീകരിച്ചു! 🔥");
+            
+            // തനിയെ 2-ാം പേജിലേക്ക് (Results Page) മാറുന്നു
+            currentViewIndex = 2;
+            for(var i=1; i<=7; i++) {
+                document.getElementById('view-' + i).className = 'view-container';
+            }
+            document.getElementById('view-2').className = 'view-container view-active';
+        }
+
         function showToast(msg) {
-            var t = document.getElementById('toast'); t.innerText = msg; t.className = 'show';
-            setTimeout(function(){ t.className = ''; }, 4000);
+            var t = document.getElementById('toast'); 
+            t.innerText = msg; 
+            t.className = 'show';
+            setTimeout(function(){ t.className = ''; }, 5000);
         }
 
         var currentViewIndex = 1;
         
-        // സ്ക്രോളിംഗ് ഇല്ലാത്തതുകൊണ്ട് 7 പേജുകളിലൂടെയുള്ള ലളിതമായ മാറ്റം
+        // 15 സെക്കൻഡ് ഇടവിട്ട് പേജുകൾ മാറും
         setInterval(function() {
             for(var i=1; i<=7; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
@@ -328,7 +375,7 @@
             });
         });
 
-        // 7-Column Table Generator (Supports array of winners for ties)
+        // 7-Column Table Generator 
         function generateTableRows(programList) {
             var tbody = "";
             if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b; padding:30px;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
@@ -412,8 +459,14 @@
             
             var sortedRes = state.results.slice().sort(function(a,b) { return (b.timestamp || 0) - (a.timestamp || 0); });
             
-            if (prevScoreA !== -1 && (prevScoreA !== stats.teamA.total || prevScoreB !== stats.teamB.total)) { playSound('score'); showToast("പോയിന്റ് നില അപ്ഡേറ്റ് ചെയ്തു!"); }
-            if (prevTotalRes !== -1 && sortedRes.length > prevTotalRes) { playSound('result'); showToast("പുതിയ റിസൾട്ട് വന്നിട്ടുണ്ട്!"); }
+            if (prevScoreA !== -1 && (prevScoreA !== stats.teamA.total || prevScoreB !== stats.teamB.total)) { 
+                playSound('score'); 
+                showToast("പോയിന്റ് നില അപ്ഡേറ്റ് ചെയ്തു!"); 
+            }
+            if (prevTotalRes !== -1 && sortedRes.length > prevTotalRes) { 
+                triggerEpicReveal(); 
+            }
+            
             prevScoreA = stats.teamA.total; prevScoreB = stats.teamB.total; prevTotalRes = sortedRes.length;
 
             var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
@@ -421,7 +474,6 @@
             document.getElementById('name-teamA-2').innerText = taName; document.getElementById('name-teamB-2').innerText = tbName;
             document.getElementById('name-teamA-3').innerText = taName; document.getElementById('name-teamB-3').innerText = tbName;
             
-            // Set Headers dynamically
             document.getElementById('th-teamA-4').innerText = taName; document.getElementById('th-teamB-4').innerText = tbName;
             document.getElementById('th-teamA-5').innerText = taName; document.getElementById('th-teamB-5').innerText = tbName;
             document.getElementById('th-teamA-6').innerText = taName; document.getElementById('th-teamB-6').innerText = tbName;
@@ -450,7 +502,6 @@
             }
             document.getElementById('results-grid-container').innerHTML = resHtml;
 
-            // Split tables
             var juniorProgs = [], seniorProgs = [], generalProgs = [];
             for (var p = 0; p < state.programs.length; p++) {
                 if(state.programs[p].cat === 'Junior') juniorProgs.push(state.programs[p]);
@@ -460,7 +511,6 @@
 
             document.getElementById('table-body-junior').innerHTML = generateTableRows(juniorProgs);
             
-            // സീനിയർ പ്രോഗ്രാമുകളെ കൃത്യം പാതിയായി തിരിക്കുന്നു (രണ്ട് സ്ക്രീനുകളിൽ ഉൾക്കൊള്ളാൻ)
             var halfSen = Math.ceil(seniorProgs.length / 2);
             document.getElementById('table-body-senior-1').innerHTML = generateTableRows(seniorProgs.slice(0, halfSen));
             document.getElementById('table-body-senior-2').innerHTML = generateTableRows(seniorProgs.slice(halfSen));
@@ -470,3 +520,5 @@
     </script>
 </body>
 </html>
+
+
