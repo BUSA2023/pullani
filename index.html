@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ഓറ ഫെസ്റ്റ് 2026 - TV Live Display</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Anek Malayalam', sans-serif; 
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            color: #ffffff; overflow: hidden; height: 100vh; width: 100vw;
+        }
+        .num-font { font-family: 'Outfit', sans-serif; }
+        
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 9999;
+            display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; 
+            -webkit-justify-content: center; justify-content: center; flex-direction: column; cursor: pointer;
+        }
+        .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; }
+
+        .view-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; padding: 25px 40px; -webkit-flex-direction: column; flex-direction: column;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .view-active { display: -webkit-flex; display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 40px; font-weight: 800; color: #f8fafc; text-transform: uppercase; letter-spacing: 2px;}
+        .header span { color: #ec4899; }
+        .page-title { text-align: center; font-size: 22px; color: #fbbf24; margin-bottom: 15px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; text-transform: uppercase; }
+
+        /* --- PAGE 1: TOTAL SCORE --- */
+        .dashboard-content { display: -webkit-flex; display: flex; -webkit-justify-content: space-around; justify-content: space-around; -webkit-align-items: center; align-items: center; flex: 1; padding: 0 50px; }
+        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 50px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); }
+        .team-name { font-size: 50px; font-weight: bold; margin-bottom: 10px; }
+        .team-name.team-a { color: #fb7185; text-shadow: 0 0 20px rgba(251, 113, 133, 0.4); }
+        .team-name.team-b { color: #818cf8; text-shadow: 0 0 20px rgba(129, 140, 248, 0.4); }
+        .huge-points { font-size: 15vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 100px; height: 100px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 30px; font-weight: 900; color: #64748b; font-style: italic; }
+
+        /* --- PAGE 2: RESULTS --- */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
+        .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; }
+        .res-card.newest { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+        .rc-title { font-size: 22px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between;}
+        .rc-cat { font-size: 13px; background: #1e293b; padding: 4px 8px; border-radius: 5px; color: #94a3b8; }
+        .rc-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; }
+        .rc-row.first { border-left: 5px solid #fbbf24; }
+        .rc-row.second { border-left: 5px solid #cbd5e1; }
+        .rc-row.third { border-left: 5px solid #b45309; }
+        .rc-name { font-size: 18px; font-weight: bold; color: #f1f5f9; }
+        .rc-team { font-size: 13px; font-weight: bold; padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.1); }
+        .rc-team.a { color: #fb7185; } .rc-team.b { color: #818cf8; }
+
+        /* --- PAGE 3: CATEGORY SCORES --- */
+        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 30px; flex: 1; align-items: center; padding-top: 30px; }
+        .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px 20px; text-align: center; }
+        .cat-title { font-size: 35px; font-weight: bold; color: #fbbf24; margin-bottom: 30px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
+        .cat-team-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 15px; }
+        .cat-tname { font-size: 26px; font-weight: bold; }
+        .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
+        .cat-pts { font-size: 40px; font-weight: 900; color: #fff; }
+
+        /* --- PAGE 4, 5, 6: DETAILED POINT TABLES --- */
+        .table-container { background: rgba(15, 23, 42, 0.8); border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; }
+        .pt-table { width: 100%; border-collapse: collapse; }
+        .pt-header { background: rgba(0,0,0,0.8); border-radius: 15px 15px 0 0; }
+        
+        .pt-table th, .pt-table td { padding: 10px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 16px; border-bottom: 2px solid #334155; }
+        
+        /* Auto Scroll Wrapper */
+        .scroll-wrapper { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; background: rgba(0,0,0,0.4); border-radius: 0 0 15px 15px;}
+        .scroll-wrapper::-webkit-scrollbar { display: none; }
+        
+        .t-left { text-align: left !important; padding-left: 20px !important; }
+        .s-tag { font-size: 11px; background: #334155; padding: 3px 6px; border-radius: 4px; color: #cbd5e1; margin-left: 8px; font-weight: normal; vertical-align: middle;}
+        .s-grp { background: #78350f; color: #fcd34d; }
+        
+        .pt-team-a { color: #fb7185; font-size: 22px !important; } 
+        .pt-team-b { color: #818cf8; font-size: 22px !important; }
+        .br-left { border-left: 2px solid #334155; } /* Border to separate Team A and Team B columns */
+
+        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #toast.show { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <audio id="sound-score" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+    <audio id="sound-result" src="https://actions.google.com/sounds/v1/cartoon/magic_chime_bell.ogg" preload="auto"></audio>
+
+    <div id="start-overlay" onclick="startApp()">
+        <button class="start-btn">Start TV Display</button>
+        <p style="margin-top:20px; font-size:20px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക (For Audio)</p>
+    </div>
+
+    <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
+
+    <div id="app" style="display:none; width: 100%; height: 100%; position: relative;">
+        
+        <!-- PAGE 1 -->
+        <div id="view-1" class="view-container view-active">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
+            <div class="dashboard-content">
+                <div class="team-block">
+                    <div class="team-name team-a" id="name-teamA-1">Team A</div>
+                    <div class="huge-points num-font" id="score-teamA">0</div>
+                </div>
+                <div class="vs-circle">VS</div>
+                <div class="team-block">
+                    <div class="team-name team-b" id="name-teamB-1">Team B</div>
+                    <div class="huge-points num-font" id="score-teamB">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2 -->
+        <div id="view-2" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">ഏറ്റവും പുതിയ ഫലങ്ങൾ (LATEST RESULTS)</div>
+            <div class="results-grid" id="results-grid-container"></div>
+        </div>
+
+        <!-- PAGE 3 -->
+        <div id="view-3" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">വിഭാഗം തിരിച്ചുള്ള പോയിന്റുകൾ (CATEGORY SCORES)</div>
+            <div class="category-container">
+                <div class="cat-box">
+                    <div class="cat-title">ജൂനിയർ (Junior)</div>
+                    <div class="cat-team-row"><span class="cat-tname a" id="name-teamA-2">Team A</span><span class="cat-pts num-font" id="cat-j-a">0</span></div>
+                    <div class="cat-team-row"><span class="cat-tname b" id="name-teamB-2">Team B</span><span class="cat-pts num-font" id="cat-j-b">0</span></div>
+                </div>
+                <div class="cat-box">
+                    <div class="cat-title">സീനിയർ (Senior)</div>
+                    <div class="cat-team-row"><span class="cat-tname a" id="name-teamA-3">Team A</span><span class="cat-pts num-font" id="cat-s-a">0</span></div>
+                    <div class="cat-team-row"><span class="cat-tname b" id="name-teamB-3">Team B</span><span class="cat-pts num-font" id="cat-s-b">0</span></div>
+                </div>
+                <div class="cat-box">
+                    <div class="cat-title">ജനറൽ (General)</div>
+                    <div class="cat-team-row"><span class="cat-tname a" id="name-teamA-4">Team A</span><span class="cat-pts num-font" id="cat-g-a">0</span></div>
+                    <div class="cat-team-row"><span class="cat-tname b" id="name-teamB-4">Team B</span><span class="cat-pts num-font" id="cat-g-b">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: JUNIOR TABLE -->
+        <div id="view-4" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
+            <div class="table-container">
+                <table class="pt-table pt-header">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program Details)</th>
+                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-4">Team A</th>
+                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-4">Team B</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="scroll-wrapper" id="table-scroll-container-4">
+                    <table class="pt-table"><tbody id="table-body-junior"></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: SENIOR TABLE -->
+        <div id="view-5" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR)</div>
+            <div class="table-container">
+                <table class="pt-table pt-header">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program Details)</th>
+                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-5">Team A</th>
+                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-5">Team B</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="scroll-wrapper" id="table-scroll-container-5">
+                    <table class="pt-table"><tbody id="table-body-senior"></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 6: GENERAL TABLE -->
+        <div id="view-6" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - ജനറൽ (GENERAL)</div>
+            <div class="table-container">
+                <table class="pt-table pt-header">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program Details)</th>
+                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-6">Team A</th>
+                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-6">Team B</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="scroll-wrapper" id="table-scroll-container-6">
+                    <table class="pt-table"><tbody id="table-body-general"></tbody></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ES5 JavaScript for Old TV Compatibility -->
+    <script>
+        var appStarted = false;
+        function startApp() {
+            document.getElementById('start-overlay').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            
+            // Audio policy unlock
+            var s1 = document.getElementById('sound-score'); var s2 = document.getElementById('sound-result');
+            s1.volume = 0; s1.play().catch(function(){}); setTimeout(function(){ s1.pause(); s1.volume = 1; }, 100);
+            s2.volume = 0; s2.play().catch(function(){}); setTimeout(function(){ s2.pause(); s2.volume = 1; }, 100);
+            
+            appStarted = true; 
+            renderAll();
+        }
+
+        function playSound(type) {
+            if (!appStarted) return;
+            try { var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); audio.currentTime = 0; audio.play(); } catch(e) {}
+        }
+        function showToast(msg) {
+            var t = document.getElementById('toast'); t.innerText = msg; t.className = 'show';
+            setTimeout(function(){ t.className = ''; }, 4000);
+        }
+
+        // --- NEW SMOOTH AUTO-SCROLL LOGIC ---
+        var currentViewIndex = 1;
+        var scrollInterval = null;
+
+        function handleAutoScroll() {
+            clearInterval(scrollInterval);
+            var containerId = null;
+            if (currentViewIndex === 4) containerId = 'table-scroll-container-4';
+            if (currentViewIndex === 5) containerId = 'table-scroll-container-5';
+            if (currentViewIndex === 6) containerId = 'table-scroll-container-6';
+            
+            if(containerId) {
+                var container = document.getElementById(containerId);
+                if (container) {
+                    container.scrollTop = 0; // Start at top
+                    
+                    // ONLY scroll if content is taller than container (Prevents jerking)
+                    if (container.scrollHeight > container.clientHeight + 10) { 
+                        var scrollState = 'WAIT_TOP';
+                        var waitTicks = 60; // 60 ticks * 30ms = 1.8 seconds wait
+                        
+                        scrollInterval = setInterval(function() {
+                            if (scrollState === 'WAIT_TOP') {
+                                if (--waitTicks <= 0) scrollState = 'SCROLLING';
+                            } 
+                            else if (scrollState === 'SCROLLING') {
+                                container.scrollTop += 1; // Integer scroll (very smooth, no jitter)
+                                
+                                // Reached the bottom?
+                                if(container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
+                                    scrollState = 'WAIT_BOTTOM';
+                                    waitTicks = 60; // Wait at bottom
+                                }
+                            } 
+                            else if (scrollState === 'WAIT_BOTTOM') {
+                                if (--waitTicks <= 0) {
+                                    container.scrollTop = 0; // Jump to top safely
+                                    scrollState = 'WAIT_TOP';
+                                    waitTicks = 60;
+                                }
+                            }
+                        }, 30);
+                    }
+                }
+            }
+        }
+
+        setInterval(function() {
+            for(var i=1; i<=6; i++) {
+                document.getElementById('view-' + i).className = 'view-container';
+            }
+            currentViewIndex++;
+            if(currentViewIndex > 6) currentViewIndex = 1;
+            document.getElementById('view-' + currentViewIndex).className = 'view-container view-active';
+            handleAutoScroll();
+        }, 15000); // 15 Seconds per page
+
+        // --- FIREBASE ---
+        var firebaseConfig = {
+            apiKey: "AIzaSyCIbvk4teIJ6AlfaXbFgDMgCWpnekNwmx8",
+            authDomain: "pullani-6a39b.firebaseapp.com",
+            projectId: "pullani-6a39b",
+            storageBucket: "pullani-6a39b.firebasestorage.app",
+            messagingSenderId: "617480764841",
+            appId: "1:617480764841:web:c22959689a7003a31498b8"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var auth = firebase.auth();
+        var db = firebase.firestore();
+
+        var state = { teams: { teamA: { name: 'Team A' }, teamB: { name: 'Team B' } }, programs: [], candidates: [], results: [] };
+        var prevScoreA = -1; var prevScoreB = -1; var prevTotalRes = -1;
+
+        function getProg(id) { for(var i=0; i<state.programs.length; i++) if(state.programs[i].id === id) return state.programs[i]; return null; }
+        function getCand(id) { for(var i=0; i<state.candidates.length; i++) if(state.candidates[i].id === id) return state.candidates[i]; return null; }
+        function getTeamName(tid) { return (state.teams && state.teams[tid]) ? state.teams[tid].name : '-'; }
+        function getTeamClassShort(tid) { return tid === 'teamA' ? 'a' : 'b'; }
+
+        auth.signInAnonymously().then(function() {
+            db.collection('settings').doc('config_v4').onSnapshot(function(snap) {
+                if (snap.exists) { var d = snap.data(); if (d.teams) state.teams = d.teams; if (d.programs) state.programs = d.programs; renderAll(); }
+            });
+            db.collection('candidates').onSnapshot(function(snap) {
+                var arr = []; snap.forEach(function(doc) { var d = doc.data(); d.id = doc.id; arr.push(d); }); state.candidates = arr; renderAll();
+            });
+            db.collection('results').onSnapshot(function(snap) {
+                var arr = []; snap.forEach(function(doc) { var d = doc.data(); d.id = doc.id; arr.push(d); }); state.results = arr; renderAll();
+            });
+        });
+
+        // 7-Column Table Generator
+        function generateTableRows(programList) {
+            var tbody = "";
+            if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
+            
+            for (var p = 0; p < programList.length; p++) {
+                var tProg = programList[p];
+                var tName = tProg.name;
+                var tTag = "<span class='s-tag'>" + tProg.type + "</span>";
+                if(tProg.isGroup) tTag += "<span class='s-tag s-grp'>👥 Group</span>";
+
+                var tRes = null;
+                for(var j=0; j<state.results.length; j++) { if(state.results[j].progId === tProg.id) { tRes = state.results[j]; break; } }
+
+                var a1="-", a2="-", a3="-", b1="-", b2="-", b3="-";
+
+                if (tRes) {
+                    var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 10 : 5; var tT = tProg.isGroup ? 5 : 3;
+                    var tc1 = getCand(tRes.first); var tc2 = getCand(tRes.second); var tc3 = getCand(tRes.third);
+                    
+                    if (tc1) { if(tc1.team === 'teamA') a1 = tF; else if(tc1.team === 'teamB') b1 = tF; }
+                    if (tc2) { if(tc2.team === 'teamA') a2 = tS; else if(tc2.team === 'teamB') b2 = tS; }
+                    if (tc3) { if(tc3.team === 'teamA') a3 = tT; else if(tc3.team === 'teamB') b3 = tT; }
+                }
+
+                var sA1 = a1 !== "-" ? "color:#fbbf24; font-size:26px;" : "color:#334155;";
+                var sA2 = a2 !== "-" ? "color:#cbd5e1; font-size:24px;" : "color:#334155;";
+                var sA3 = a3 !== "-" ? "color:#d97706; font-size:24px;" : "color:#334155;";
+                
+                var sB1 = b1 !== "-" ? "color:#fbbf24; font-size:26px;" : "color:#334155;";
+                var sB2 = b2 !== "-" ? "color:#cbd5e1; font-size:24px;" : "color:#334155;";
+                var sB3 = b3 !== "-" ? "color:#d97706; font-size:24px;" : "color:#334155;";
+
+                tbody += "<tr>" +
+                    "<td class='t-left' style='width:28%;'>" + tName + " " + tTag + "</td>" +
+                    "<td style='width:12%; " + sA1 + "'>" + a1 + "</td><td style='width:12%; " + sA2 + "'>" + a2 + "</td><td style='width:12%; " + sA3 + "'>" + a3 + "</td>" +
+                    "<td class='br-left' style='width:12%; " + sB1 + "'>" + b1 + "</td><td style='width:12%; " + sB2 + "'>" + b2 + "</td><td style='width:12%; " + sB3 + "'>" + b3 + "</td>" +
+                    "</tr>";
+            }
+            return tbody;
+        }
+
+        function renderAll() {
+            if (!appStarted) return;
+            var stats = { teamA: { total: 0, junior: 0, senior: 0, general: 0 }, teamB: { total: 0, junior: 0, senior: 0, general: 0 } };
+            
+            for(var i=0; i<state.results.length; i++) {
+                var res = state.results[i]; var prog = getProg(res.progId);
+                var isGroup = prog ? prog.isGroup : false; var cat = prog ? prog.cat : 'General';
+                var fPts = isGroup ? 15 : 10; var sPts = isGroup ? 10 : 5; var tPts = isGroup ? 5 : 3;
+                var c1 = getCand(res.first); var c2 = getCand(res.second); var c3 = getCand(res.third);
+
+                if (c1 && stats[c1.team]) { stats[c1.team].total += fPts; stats[c1.team][cat.toLowerCase()] += fPts; }
+                if (c2 && stats[c2.team]) { stats[c2.team].total += sPts; stats[c2.team][cat.toLowerCase()] += sPts; }
+                if (c3 && stats[c3.team]) { stats[c3.team].total += tPts; stats[c3.team][cat.toLowerCase()] += tPts; }
+            }
+            
+            var sortedRes = state.results.slice().sort(function(a,b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+            
+            if (prevScoreA !== -1 && (prevScoreA !== stats.teamA.total || prevScoreB !== stats.teamB.total)) { playSound('score'); showToast("പോയിന്റ് നില അപ്ഡേറ്റ് ചെയ്തു!"); }
+            if (prevTotalRes !== -1 && sortedRes.length > prevTotalRes) { playSound('result'); showToast("പുതിയ റിസൾട്ട് വന്നിട്ടുണ്ട്!"); }
+            prevScoreA = stats.teamA.total; prevScoreB = stats.teamB.total; prevTotalRes = sortedRes.length;
+
+            var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
+            document.getElementById('name-teamA-1').innerText = taName; document.getElementById('name-teamB-1').innerText = tbName;
+            document.getElementById('name-teamA-2').innerText = taName; document.getElementById('name-teamB-2').innerText = tbName;
+            document.getElementById('name-teamA-3').innerText = taName; document.getElementById('name-teamB-3').innerText = tbName;
+            
+            // Set Headers for Junior, Senior, General tables
+            document.getElementById('th-teamA-4').innerText = taName; document.getElementById('th-teamB-4').innerText = tbName;
+            document.getElementById('th-teamA-5').innerText = taName; document.getElementById('th-teamB-5').innerText = tbName;
+            document.getElementById('th-teamA-6').innerText = taName; document.getElementById('th-teamB-6').innerText = tbName;
+
+            document.getElementById('score-teamA').innerText = stats.teamA.total; document.getElementById('score-teamB').innerText = stats.teamB.total;
+            document.getElementById('cat-j-a').innerText = stats.teamA.junior; document.getElementById('cat-j-b').innerText = stats.teamB.junior;
+            document.getElementById('cat-s-a').innerText = stats.teamA.senior; document.getElementById('cat-s-b').innerText = stats.teamB.senior;
+            document.getElementById('cat-g-a').innerText = stats.teamA.general; document.getElementById('cat-g-b').innerText = stats.teamB.general;
+
+            var resHtml = "";
+            if (sortedRes.length === 0) resHtml = "<h2 style='color:#64748b; grid-column:span 2; text-align:center;'>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2>";
+            for(var r=0; r<Math.min(sortedRes.length, 6); r++) {
+                var latestRes = sortedRes[r]; var latestProg = getProg(latestRes.progId);
+                var pName = latestProg ? latestProg.name : '-'; var pCat = latestProg ? latestProg.cat : '';
+                var isNew = (r === 0) ? " newest" : "";
+                var cl1 = getCand(latestRes.first); var cl2 = getCand(latestRes.second); var cl3 = getCand(latestRes.third);
+
+                resHtml += "<div class='res-card" + isNew + "'><div class='rc-title'><span>" + pName + "</span> <span class='rc-cat'>" + pCat + "</span></div>";
+                if(cl1) resHtml += "<div class='rc-row first'><span class='rc-name'>🥇 " + cl1.name + "</span><span class='rc-team " + getTeamClassShort(cl1.team) + "'>" + getTeamName(cl1.team) + "</span></div>";
+                if(cl2) resHtml += "<div class='rc-row second'><span class='rc-name'>🥈 " + cl2.name + "</span><span class='rc-team " + getTeamClassShort(cl2.team) + "'>" + getTeamName(cl2.team) + "</span></div>";
+                if(cl3) resHtml += "<div class='rc-row third'><span class='rc-name'>🥉 " + cl3.name + "</span><span class='rc-team " + getTeamClassShort(cl3.team) + "'>" + getTeamName(cl3.team) + "</span></div>";
+                resHtml += "</div>";
+            }
+            document.getElementById('results-grid-container').innerHTML = resHtml;
+
+            // Split into Junior, Senior, General
+            var juniorProgs = [], seniorProgs = [], generalProgs = [];
+            for (var p = 0; p < state.programs.length; p++) {
+                if(state.programs[p].cat === 'Junior') juniorProgs.push(state.programs[p]);
+                else if(state.programs[p].cat === 'Senior') seniorProgs.push(state.programs[p]);
+                else if(state.programs[p].cat === 'General') generalProgs.push(state.programs[p]);
+            }
+
+            document.getElementById('table-body-junior').innerHTML = generateTableRows(juniorProgs);
+            document.getElementById('table-body-senior').innerHTML = generateTableRows(seniorProgs);
+            document.getElementById('table-body-general').innerHTML = generateTableRows(generalProgs);
+        }
+    </script>
+</body>
+</html>
