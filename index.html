@@ -73,17 +73,20 @@
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 40px; font-weight: 900; color: #fff; }
 
-        /* --- PAGE 4, 5, 6: DETAILED POINT TABLES --- */
-        .table-container { background: rgba(15, 23, 42, 0.8); border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; }
+        /* --- POINT TABLES (NO SCROLLING) --- */
+        .table-container { 
+            background: rgba(15, 23, 42, 0.8); border-radius: 20px; padding: 15px; 
+            border: 1px solid rgba(255,255,255,0.1); flex: 1; 
+            display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; 
+        }
         .pt-table { width: 100%; border-collapse: collapse; }
         .pt-header { background: rgba(0,0,0,0.8); border-radius: 15px 15px 0 0; }
         
-        .pt-table th, .pt-table td { padding: 10px; text-align: center; font-size: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pt-table th, .pt-table td { padding: 9px 10px; text-align: center; font-size: 19px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 16px; border-bottom: 2px solid #334155; }
         
-        /* Auto Scroll Wrapper */
-        .scroll-wrapper { flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; background: rgba(0,0,0,0.4); border-radius: 0 0 15px 15px;}
-        .scroll-wrapper::-webkit-scrollbar { display: none; }
+        /* Removed scrolling to fit all items perfectly */
+        .no-scroll-wrapper { flex: 1; background: rgba(0,0,0,0.4); border-radius: 0 0 15px 15px; overflow: hidden; }
         
         .t-left { text-align: left !important; padding-left: 20px !important; }
         .s-tag { font-size: 11px; background: #334155; padding: 3px 6px; border-radius: 4px; color: #cbd5e1; margin-left: 8px; font-weight: normal; vertical-align: middle;}
@@ -91,7 +94,7 @@
         
         .pt-team-a { color: #fb7185; font-size: 22px !important; } 
         .pt-team-b { color: #818cf8; font-size: 22px !important; }
-        .br-left { border-left: 2px solid #334155; } /* Border to separate Team A and Team B columns */
+        .br-left { border-left: 2px solid #334155; }
 
         #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         #toast.show { transform: translateY(0); }
@@ -99,8 +102,9 @@
 </head>
 <body>
 
-    <audio id="sound-score" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
-    <audio id="sound-result" src="https://actions.google.com/sounds/v1/cartoon/magic_chime_bell.ogg" preload="auto"></audio>
+    <!-- Updated sounds: Attractive notification chime for score update, Shocking/Epic cinematic sound for new results -->
+    <audio id="sound-score" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
+    <audio id="sound-result" src="https://assets.mixkit.co/sfx/preview/mixkit-epic-orchestra-transition-2290.mp3" preload="auto"></audio>
 
     <div id="start-overlay" onclick="startApp()">
         <button class="start-btn">Start TV Display</button>
@@ -176,16 +180,16 @@
                         </tr>
                     </thead>
                 </table>
-                <div class="scroll-wrapper" id="table-scroll-container-4">
+                <div class="no-scroll-wrapper">
                     <table class="pt-table"><tbody id="table-body-junior"></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- PAGE 5: SENIOR TABLE -->
+        <!-- PAGE 5: SENIOR TABLE (PART 1) -->
         <div id="view-5" class="view-container">
             <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
-            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR)</div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 1</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
                     <thead>
@@ -200,16 +204,16 @@
                         </tr>
                     </thead>
                 </table>
-                <div class="scroll-wrapper" id="table-scroll-container-5">
-                    <table class="pt-table"><tbody id="table-body-senior"></tbody></table>
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table"><tbody id="table-body-senior-1"></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- PAGE 6: GENERAL TABLE -->
+        <!-- PAGE 6: SENIOR TABLE (PART 2) -->
         <div id="view-6" class="view-container">
             <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
-            <div class="page-title">പോയിന്റ് ടേബിൾ - ജനറൽ (GENERAL)</div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 2</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
                     <thead>
@@ -224,7 +228,31 @@
                         </tr>
                     </thead>
                 </table>
-                <div class="scroll-wrapper" id="table-scroll-container-6">
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table"><tbody id="table-body-senior-2"></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 7: GENERAL TABLE -->
+        <div id="view-7" class="view-container">
+            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - ജനറൽ (GENERAL)</div>
+            <div class="table-container">
+                <table class="pt-table pt-header">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program Details)</th>
+                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-7">Team A</th>
+                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-7">Team B</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="no-scroll-wrapper">
                     <table class="pt-table"><tbody id="table-body-general"></tbody></table>
                 </div>
             </div>
@@ -232,14 +260,12 @@
 
     </div>
 
-    <!-- ES5 JavaScript for Old TV Compatibility -->
     <script>
         var appStarted = false;
         function startApp() {
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
-            // Audio policy unlock
             var s1 = document.getElementById('sound-score'); var s2 = document.getElementById('sound-result');
             s1.volume = 0; s1.play().catch(function(){}); setTimeout(function(){ s1.pause(); s1.volume = 1; }, 100);
             s2.volume = 0; s2.play().catch(function(){}); setTimeout(function(){ s2.pause(); s2.volume = 1; }, 100);
@@ -252,69 +278,24 @@
             if (!appStarted) return;
             try { var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); audio.currentTime = 0; audio.play(); } catch(e) {}
         }
+        
         function showToast(msg) {
             var t = document.getElementById('toast'); t.innerText = msg; t.className = 'show';
             setTimeout(function(){ t.className = ''; }, 4000);
         }
 
-        // --- NEW SMOOTH AUTO-SCROLL LOGIC ---
         var currentViewIndex = 1;
-        var scrollInterval = null;
-
-        function handleAutoScroll() {
-            clearInterval(scrollInterval);
-            var containerId = null;
-            if (currentViewIndex === 4) containerId = 'table-scroll-container-4';
-            if (currentViewIndex === 5) containerId = 'table-scroll-container-5';
-            if (currentViewIndex === 6) containerId = 'table-scroll-container-6';
-            
-            if(containerId) {
-                var container = document.getElementById(containerId);
-                if (container) {
-                    container.scrollTop = 0; // Start at top
-                    
-                    // ONLY scroll if content is taller than container (Prevents jerking)
-                    if (container.scrollHeight > container.clientHeight + 10) { 
-                        var scrollState = 'WAIT_TOP';
-                        var waitTicks = 60; // 60 ticks * 30ms = 1.8 seconds wait
-                        
-                        scrollInterval = setInterval(function() {
-                            if (scrollState === 'WAIT_TOP') {
-                                if (--waitTicks <= 0) scrollState = 'SCROLLING';
-                            } 
-                            else if (scrollState === 'SCROLLING') {
-                                container.scrollTop += 1; // Integer scroll (very smooth, no jitter)
-                                
-                                // Reached the bottom?
-                                if(container.scrollTop >= (container.scrollHeight - container.clientHeight - 2)) {
-                                    scrollState = 'WAIT_BOTTOM';
-                                    waitTicks = 60; // Wait at bottom
-                                }
-                            } 
-                            else if (scrollState === 'WAIT_BOTTOM') {
-                                if (--waitTicks <= 0) {
-                                    container.scrollTop = 0; // Jump to top safely
-                                    scrollState = 'WAIT_TOP';
-                                    waitTicks = 60;
-                                }
-                            }
-                        }, 30);
-                    }
-                }
-            }
-        }
-
+        
+        // സ്ക്രോളിംഗ് ഇല്ലാത്തതുകൊണ്ട് 7 പേജുകളിലൂടെയുള്ള ലളിതമായ മാറ്റം
         setInterval(function() {
-            for(var i=1; i<=6; i++) {
+            for(var i=1; i<=7; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
             }
             currentViewIndex++;
-            if(currentViewIndex > 6) currentViewIndex = 1;
+            if(currentViewIndex > 7) currentViewIndex = 1;
             document.getElementById('view-' + currentViewIndex).className = 'view-container view-active';
-            handleAutoScroll();
-        }, 15000); // 15 Seconds per page
+        }, 15000); 
 
-        // --- FIREBASE ---
         var firebaseConfig = {
             apiKey: "AIzaSyCIbvk4teIJ6AlfaXbFgDMgCWpnekNwmx8",
             authDomain: "pullani-6a39b.firebaseapp.com",
@@ -347,10 +328,10 @@
             });
         });
 
-        // 7-Column Table Generator
+        // 7-Column Table Generator (Supports array of winners for ties)
         function generateTableRows(programList) {
             var tbody = "";
-            if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
+            if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b; padding:30px;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
             
             for (var p = 0; p < programList.length; p++) {
                 var tProg = programList[p];
@@ -365,11 +346,18 @@
 
                 if (tRes) {
                     var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 10 : 5; var tT = tProg.isGroup ? 5 : 3;
-                    var tc1 = getCand(tRes.first); var tc2 = getCand(tRes.second); var tc3 = getCand(tRes.third);
                     
-                    if (tc1) { if(tc1.team === 'teamA') a1 = tF; else if(tc1.team === 'teamB') b1 = tF; }
-                    if (tc2) { if(tc2.team === 'teamA') a2 = tS; else if(tc2.team === 'teamB') b2 = tS; }
-                    if (tc3) { if(tc3.team === 'teamA') a3 = tT; else if(tc3.team === 'teamB') b3 = tT; }
+                    var checkPts = function(ids, pts) {
+                        var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+                        for(var k=0; k<arr.length; k++) {
+                            var cand = getCand(arr[k]);
+                            if(cand) {
+                                if(cand.team === 'teamA') { if(pts === tF) a1 = tF; else if(pts === tS) a2 = tS; else if(pts === tT) a3 = tT; }
+                                else if(cand.team === 'teamB') { if(pts === tF) b1 = tF; else if(pts === tS) b2 = tS; else if(pts === tT) b3 = tT; }
+                            }
+                        }
+                    };
+                    checkPts(tRes.first, tF); checkPts(tRes.second, tS); checkPts(tRes.third, tT);
                 }
 
                 var sA1 = a1 !== "-" ? "color:#fbbf24; font-size:26px;" : "color:#334155;";
@@ -389,6 +377,19 @@
             return tbody;
         }
 
+        const getCandNamesString = (ids) => {
+            const arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+            if(arr.length === 0) return '-';
+            return arr.map(id => getCand(id)?.name || '-').join(', ');
+        };
+
+        const getTeamNamesString = (ids) => {
+            const arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+            if(arr.length === 0) return '-';
+            const teams = arr.map(id => { const c = getCand(id); return c ? getTeamName(c.team) : '-'; });
+            return [...new Set(teams)].join(' & ');
+        };
+
         function renderAll() {
             if (!appStarted) return;
             var stats = { teamA: { total: 0, junior: 0, senior: 0, general: 0 }, teamB: { total: 0, junior: 0, senior: 0, general: 0 } };
@@ -397,11 +398,16 @@
                 var res = state.results[i]; var prog = getProg(res.progId);
                 var isGroup = prog ? prog.isGroup : false; var cat = prog ? prog.cat : 'General';
                 var fPts = isGroup ? 15 : 10; var sPts = isGroup ? 10 : 5; var tPts = isGroup ? 5 : 3;
-                var c1 = getCand(res.first); var c2 = getCand(res.second); var c3 = getCand(res.third);
 
-                if (c1 && stats[c1.team]) { stats[c1.team].total += fPts; stats[c1.team][cat.toLowerCase()] += fPts; }
-                if (c2 && stats[c2.team]) { stats[c2.team].total += sPts; stats[c2.team][cat.toLowerCase()] += sPts; }
-                if (c3 && stats[c3.team]) { stats[c3.team].total += tPts; stats[c3.team][cat.toLowerCase()] += tPts; }
+                var addPts = function(ids, pts) {
+                    var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+                    for(var k=0; k<arr.length; k++) {
+                        var c = getCand(arr[k]);
+                        if(c && stats[c.team]) { stats[c.team].total += pts; stats[c.team][cat.toLowerCase()] += pts; }
+                    }
+                };
+                
+                addPts(res.first, fPts); addPts(res.second, sPts); addPts(res.third, tPts);
             }
             
             var sortedRes = state.results.slice().sort(function(a,b) { return (b.timestamp || 0) - (a.timestamp || 0); });
@@ -415,10 +421,11 @@
             document.getElementById('name-teamA-2').innerText = taName; document.getElementById('name-teamB-2').innerText = tbName;
             document.getElementById('name-teamA-3').innerText = taName; document.getElementById('name-teamB-3').innerText = tbName;
             
-            // Set Headers for Junior, Senior, General tables
+            // Set Headers dynamically
             document.getElementById('th-teamA-4').innerText = taName; document.getElementById('th-teamB-4').innerText = tbName;
             document.getElementById('th-teamA-5').innerText = taName; document.getElementById('th-teamB-5').innerText = tbName;
             document.getElementById('th-teamA-6').innerText = taName; document.getElementById('th-teamB-6').innerText = tbName;
+            document.getElementById('th-teamA-7').innerText = taName; document.getElementById('th-teamB-7').innerText = tbName;
 
             document.getElementById('score-teamA').innerText = stats.teamA.total; document.getElementById('score-teamB').innerText = stats.teamB.total;
             document.getElementById('cat-j-a').innerText = stats.teamA.junior; document.getElementById('cat-j-b').innerText = stats.teamB.junior;
@@ -431,17 +438,19 @@
                 var latestRes = sortedRes[r]; var latestProg = getProg(latestRes.progId);
                 var pName = latestProg ? latestProg.name : '-'; var pCat = latestProg ? latestProg.cat : '';
                 var isNew = (r === 0) ? " newest" : "";
-                var cl1 = getCand(latestRes.first); var cl2 = getCand(latestRes.second); var cl3 = getCand(latestRes.third);
+                
+                var c1Names = getCandNamesString(latestRes.first); var c2Names = getCandNamesString(latestRes.second); var c3Names = getCandNamesString(latestRes.third);
+                var c1Teams = getTeamNamesString(latestRes.first); var c2Teams = getTeamNamesString(latestRes.second); var c3Teams = getTeamNamesString(latestRes.third);
 
                 resHtml += "<div class='res-card" + isNew + "'><div class='rc-title'><span>" + pName + "</span> <span class='rc-cat'>" + pCat + "</span></div>";
-                if(cl1) resHtml += "<div class='rc-row first'><span class='rc-name'>🥇 " + cl1.name + "</span><span class='rc-team " + getTeamClassShort(cl1.team) + "'>" + getTeamName(cl1.team) + "</span></div>";
-                if(cl2) resHtml += "<div class='rc-row second'><span class='rc-name'>🥈 " + cl2.name + "</span><span class='rc-team " + getTeamClassShort(cl2.team) + "'>" + getTeamName(cl2.team) + "</span></div>";
-                if(cl3) resHtml += "<div class='rc-row third'><span class='rc-name'>🥉 " + cl3.name + "</span><span class='rc-team " + getTeamClassShort(cl3.team) + "'>" + getTeamName(cl3.team) + "</span></div>";
+                if(c1Names !== '-') resHtml += "<div class='rc-row first'><span class='rc-name'>🥇 " + c1Names + "</span><span class='rc-team' style='color:#fbbf24'>" + c1Teams + "</span></div>";
+                if(c2Names !== '-') resHtml += "<div class='rc-row second'><span class='rc-name'>🥈 " + c2Names + "</span><span class='rc-team' style='color:#cbd5e1'>" + c2Teams + "</span></div>";
+                if(c3Names !== '-') resHtml += "<div class='rc-row third'><span class='rc-name'>🥉 " + c3Names + "</span><span class='rc-team' style='color:#b45309'>" + c3Teams + "</span></div>";
                 resHtml += "</div>";
             }
             document.getElementById('results-grid-container').innerHTML = resHtml;
 
-            // Split into Junior, Senior, General
+            // Split tables
             var juniorProgs = [], seniorProgs = [], generalProgs = [];
             for (var p = 0; p < state.programs.length; p++) {
                 if(state.programs[p].cat === 'Junior') juniorProgs.push(state.programs[p]);
@@ -450,7 +459,12 @@
             }
 
             document.getElementById('table-body-junior').innerHTML = generateTableRows(juniorProgs);
-            document.getElementById('table-body-senior').innerHTML = generateTableRows(seniorProgs);
+            
+            // സീനിയർ പ്രോഗ്രാമുകളെ കൃത്യം പാതിയായി തിരിക്കുന്നു (രണ്ട് സ്ക്രീനുകളിൽ ഉൾക്കൊള്ളാൻ)
+            var halfSen = Math.ceil(seniorProgs.length / 2);
+            document.getElementById('table-body-senior-1').innerHTML = generateTableRows(seniorProgs.slice(0, halfSen));
+            document.getElementById('table-body-senior-2').innerHTML = generateTableRows(seniorProgs.slice(halfSen));
+            
             document.getElementById('table-body-general').innerHTML = generateTableRows(generalProgs);
         }
     </script>
