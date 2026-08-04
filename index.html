@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ഓറ ഫെസ്റ്റ് 2026 - TV Live Display</title>
+    <title>ആവാസേ ഫുനൂൻ - TV Live Display</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
+    <!-- Premium Fonts: Baloo Chettan 2 for Calligraphic Titles, Anek for standard text, Outfit for numbers -->
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -19,6 +20,7 @@
             color: #ffffff; overflow: hidden; height: 100vh; width: 100vw;
         }
         .num-font { font-family: 'Outfit', sans-serif; }
+        .fest-title { font-family: 'Baloo Chettan 2', sans-serif; font-weight: 800; }
         
         #start-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -44,8 +46,10 @@
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 40px; font-weight: 800; color: #f8fafc; text-transform: uppercase; letter-spacing: 2px;}
-        .header span { color: #ec4899; }
+        .header h1 { font-size: 50px; color: #f8fafc; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; }
+        /* വെക്റ്റർ ലോഗോക്ക് ഗ്ലോ എഫക്ട് */
+        .header-logo { width: 55px; height: 55px; margin-right: 15px; filter: drop-shadow(0 0 15px rgba(236,72,153,0.6)); }
+        
         .page-title { text-align: center; font-size: 22px; color: #fbbf24; margin-bottom: 15px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; text-transform: uppercase; }
 
         /* --- PAGE 1: TOTAL SCORE --- */
@@ -121,11 +125,36 @@
 
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
 
+    <!-- Reusable SVG Vector Art Logo Definition -->
+    <svg style="display:none;">
+        <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fbbf24" />
+                <stop offset="100%" stop-color="#f59e0b" />
+            </linearGradient>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ec4899" />
+                <stop offset="100%" stop-color="#8b5cf6" />
+            </linearGradient>
+            <g id="logo-art">
+                <path d="M50 15 Q65 40 85 50 Q65 60 50 85 Q35 60 15 50 Q35 40 50 15 Z" fill="url(#grad1)" opacity="0.9"/>
+                <circle cx="50" cy="50" r="12" fill="#0f172a"/>
+                <path d="M50 40 L53 47 L60 50 L53 53 L50 60 L47 53 L40 50 L47 47 Z" fill="url(#grad2)"/>
+            </g>
+        </defs>
+    </svg>
+
     <div id="app" style="display:none; width: 100%; height: 100%; position: relative;">
         
         <!-- PAGE 1 -->
         <div id="view-1" class="view-container view-active">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
             <div class="dashboard-content">
                 <div class="team-block">
@@ -142,14 +171,26 @@
 
         <!-- PAGE 2 -->
         <div id="view-2" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">ഏറ്റവും പുതിയ ഫലങ്ങൾ (LATEST RESULTS)</div>
             <div class="results-grid" id="results-grid-container"></div>
         </div>
 
         <!-- PAGE 3 -->
         <div id="view-3" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">വിഭാഗം തിരിച്ചുള്ള പോയിന്റുകൾ (CATEGORY SCORES)</div>
             <div class="category-container">
                 <div class="cat-box">
@@ -172,7 +213,13 @@
 
         <!-- PAGE 4: JUNIOR TABLE -->
         <div id="view-4" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
@@ -196,7 +243,13 @@
 
         <!-- PAGE 5: SENIOR TABLE (PART 1) -->
         <div id="view-5" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 1</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
@@ -220,7 +273,13 @@
 
         <!-- PAGE 6: SENIOR TABLE (PART 2) -->
         <div id="view-6" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 2</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
@@ -244,7 +303,13 @@
 
         <!-- PAGE 7: GENERAL TABLE -->
         <div id="view-7" class="view-container">
-            <div class="header"><h1>ഓറ ഫെസ്റ്റ് <span>'26</span> തത്സമയ ഫലങ്ങൾ</h1></div>
+            <div class="header">
+                <h1 class="fest-title">
+                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
+                    ആവാസേ ഫുനൂൻ 
+                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
+                </h1>
+            </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജനറൽ (GENERAL)</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
@@ -520,5 +585,3 @@
     </script>
 </body>
 </html>
-
-
