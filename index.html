@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ആവാസേ ഫുനൂൻ - RESULT</title>
+    <title>ആവാസേ ഫുനൂൻ - TV Live Display</title>
     
     <!-- Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase & Confetti for Falling Ribbons -->
+    <!-- Firebase & Confetti -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -33,7 +33,6 @@
         .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
         .start-btn:hover { transform: scale(1.05); }
 
-        /* സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
         #flash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 9998; opacity: 0; pointer-events: none;
@@ -66,7 +65,6 @@
         .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
         .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; position: relative; }
         
-        /* Newest Result Styling (Bigger and Full Width) */
         .res-card.newest { 
             grid-column: span 2; 
             border-color: #10b981; 
@@ -81,7 +79,6 @@
         .res-card.newest .rc-name { font-size: 24px; }
         .res-card.newest .rc-team { font-size: 15px; padding: 5px 10px; }
 
-        /* WINNING RIBBON CSS (For the latest result) */
         .corner-ribbon {
             width: 140px; height: 140px;
             overflow: hidden; position: absolute;
@@ -118,7 +115,7 @@
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 35px; font-weight: 900; color: #fff; }
 
-        /* --- POINT TABLES (COMPACT & NO SCROLLING) --- */
+        /* --- POINT TABLES --- */
         .table-container { 
             background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; 
             border: 1px solid rgba(255,255,255,0.1); flex: 1; 
@@ -146,8 +143,9 @@
 </head>
 <body>
 
-    <!-- Audio Links: Notification & Cinematic Hit -->
-    <audio id="sound-score" src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-reject-notification-896.mp3" preload="auto"></audio>
+    <!-- LOCAL AUDIO FILES (Ensure these files are in the exact same folder as this HTML file) -->
+    <audio id="sound-score" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
+    <!-- Fallback cinematic hit for new results if you want it different, or replace src with another local file -->
     <audio id="sound-result" src="https://cdn.pixabay.com/download/audio/2022/10/09/audio_2d8b5a0e36.mp3?filename=cinematic-hit-121980.mp3" preload="auto"></audio>
 
     <div id="flash-screen"></div>
@@ -348,15 +346,12 @@
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
-            var s1 = document.getElementById('sound-score'); var s2 = document.getElementById('sound-result');
-            s1.muted = true; s2.muted = true;
-            s1.play().catch(function(){}); s2.play().catch(function(){});
+            var s1 = document.getElementById('sound-score'); 
+            var s2 = document.getElementById('sound-result');
             
-            setTimeout(function() {
-                s1.pause(); s2.pause();
-                s1.muted = false; s2.muted = false;
-                s1.currentTime = 0; s2.currentTime = 0;
-            }, 100);
+            // Audio Unlock fix for strict browsers (Plays immediately on user interaction)
+            if (s1) { s1.play().then(function(){ s1.pause(); s1.currentTime = 0; }).catch(function(e){ console.log(e); }); }
+            if (s2) { s2.play().then(function(){ s2.pause(); s2.currentTime = 0; }).catch(function(e){ console.log(e); }); }
             
             appStarted = true; 
             renderAll();
@@ -366,25 +361,29 @@
             if (!appStarted) return;
             try { 
                 var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); 
-                audio.currentTime = 0; audio.volume = 1; audio.play(); 
-            } catch(e) { console.error("Audio Play Error:", e); }
+                if (audio) {
+                    audio.pause();
+                    audio.currentTime = 0; 
+                    audio.volume = 1;
+                    audio.play().catch(function(e) { console.error("Audio Play Error:", e); }); 
+                }
+            } catch(e) { console.error(e); }
         }
         
-        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & ഫയർ വർക്ക്സ് റിബൺ (Optimized for TV Lag)
+        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & ഫയർ വർക്ക്സ് റിബൺ 
         function triggerEpicReveal() {
             playSound('result');
             
-            // സ്ക്രീൻ ഫ്ലാഷ് (കൂടുതൽ വേഗത്തിൽ)
+            // സ്ക്രീൻ ഫ്ലാഷ് 
             var flash = document.getElementById('flash-screen');
             flash.style.transition = 'none'; flash.style.opacity = '1';
             setTimeout(function() { flash.style.transition = 'opacity 0.8s ease-out'; flash.style.opacity = '0'; }, 50);
             
-            // മുകളിൽ നിന്ന് റിബണുകൾ വീഴുന്ന ആനിമേഷൻ (ടിവിയിൽ ലാഗ് ഒഴിവാക്കാൻ സമയം കുറച്ചു - 1.5 സെക്കൻഡ്)
+            // മുകളിൽ നിന്ന് റിബണുകൾ വീഴുന്ന ആനിമേഷൻ 
             try {
                 var duration = 1.5 * 1000; 
                 var end = Date.now() + duration;
                 (function frame() {
-                    // TV-യുടെ പ്രോസസ്സറിന് ഭാരമാവാതിരിക്കാൻ particleCount കുറച്ചു
                     confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
                     confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
                     if (Date.now() < end) { requestAnimationFrame(frame); }
@@ -478,7 +477,6 @@
                     checkPts(tRes.first, tF); checkPts(tRes.second, tS); checkPts(tRes.third, tT);
                 }
 
-                // Smaller Font Sizes inside table to fit properly without scrolling
                 var sA1 = a1 !== "-" ? "color:#fbbf24; font-size:20px;" : "color:#334155;";
                 var sA2 = a2 !== "-" ? "color:#cbd5e1; font-size:18px;" : "color:#334155;";
                 var sA3 = a3 !== "-" ? "color:#d97706; font-size:18px;" : "color:#334155;";
