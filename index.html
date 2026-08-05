@@ -146,7 +146,7 @@
 </head>
 <body>
 
-    <!-- Audio Links: Updated notification score sound with the one you requested -->
+    <!-- Audio Links: Notification & Cinematic Hit -->
     <audio id="sound-score" src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-reject-notification-896.mp3" preload="auto"></audio>
     <audio id="sound-result" src="https://cdn.pixabay.com/download/audio/2022/10/09/audio_2d8b5a0e36.mp3?filename=cinematic-hit-121980.mp3" preload="auto"></audio>
 
@@ -370,21 +370,23 @@
             } catch(e) { console.error("Audio Play Error:", e); }
         }
         
-        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & ഫയർ വർക്ക്സ് റിബൺ
+        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & ഫയർ വർക്ക്സ് റിബൺ (Optimized for TV Lag)
         function triggerEpicReveal() {
             playSound('result');
             
-            // സ്ക്രീൻ ഫ്ലാഷ്
+            // സ്ക്രീൻ ഫ്ലാഷ് (കൂടുതൽ വേഗത്തിൽ)
             var flash = document.getElementById('flash-screen');
             flash.style.transition = 'none'; flash.style.opacity = '1';
-            setTimeout(function() { flash.style.transition = 'opacity 1.5s ease-out'; flash.style.opacity = '0'; }, 50);
+            setTimeout(function() { flash.style.transition = 'opacity 0.8s ease-out'; flash.style.opacity = '0'; }, 50);
             
-            // മുകളിൽ നിന്ന് റിബണുകൾ വീഴുന്ന ആനിമേഷൻ (Confetti)
+            // മുകളിൽ നിന്ന് റിബണുകൾ വീഴുന്ന ആനിമേഷൻ (ടിവിയിൽ ലാഗ് ഒഴിവാക്കാൻ സമയം കുറച്ചു - 1.5 സെക്കൻഡ്)
             try {
-                var duration = 5 * 1000; var end = Date.now() + duration;
+                var duration = 1.5 * 1000; 
+                var end = Date.now() + duration;
                 (function frame() {
-                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
-                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
+                    // TV-യുടെ പ്രോസസ്സറിന് ഭാരമാവാതിരിക്കാൻ particleCount കുറച്ചു
+                    confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
+                    confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
                     if (Date.now() < end) { requestAnimationFrame(frame); }
                 }());
             } catch(e) {}
