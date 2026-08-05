@@ -14,13 +14,10 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { 
-            height: 100%; width: 100%; margin: 0; padding: 0;
-        }
         body { 
             font-family: 'Anek Malayalam', sans-serif; 
             background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            color: #ffffff; overflow: hidden;
+            color: #ffffff; overflow: hidden; height: 100vh; width: 100vw;
         }
         .num-font { font-family: 'Outfit', sans-serif; }
         .fest-title { font-family: 'Baloo Chettan 2', sans-serif; font-weight: 800; }
@@ -29,12 +26,16 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
             display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; 
-            -webkit-justify-content: center; justify-content: center; -webkit-flex-direction: column; flex-direction: column; cursor: pointer;
+            -webkit-justify-content: center; justify-content: center; flex-direction: column; cursor: pointer;
         }
         .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
         .start-btn:hover { transform: scale(1.05); }
 
-        /* പുതിയ റിസൾട്ട് വരുമ്പോഴുള്ള സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
+        #fullscreen-btn {
+            position: fixed; bottom: 20px; right: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 9000; font-size: 12px; font-weight: bold;
+        }
+
+        /* സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
         #flash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 9998; opacity: 0; pointer-events: none;
@@ -42,18 +43,17 @@
 
         .view-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; padding: 25px 40px; -webkit-flex-direction: column; flex-direction: column;
+            display: none; padding: 20px 40px; -webkit-flex-direction: column; flex-direction: column;
             animation: fadeIn 1s ease-in-out;
         }
         .view-active { display: -webkit-flex; display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 50px; color: #f8fafc; letter-spacing: 1px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
-        /* വെക്റ്റർ ലോഗോക്ക് ഗ്ലോ എഫക്ട് */
-        .header-logo { width: 55px; height: 55px; margin-right: 15px; filter: drop-shadow(0 0 15px rgba(236,72,153,0.6)); }
+        .header { text-align: center; margin-bottom: 15px; }
+        .header h1 { font-size: 45px; color: #f8fafc; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .header-logo { width: 50px; height: 50px; margin-right: 15px; filter: drop-shadow(0 0 15px rgba(236,72,153,0.6)); }
         
-        .page-title { text-align: center; font-size: 22px; color: #fbbf24; margin-bottom: 15px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; text-transform: uppercase; }
+        .page-title { text-align: center; font-size: 20px; color: #fbbf24; margin-bottom: 15px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; text-transform: uppercase; }
 
         /* --- PAGE 1: TOTAL SCORE --- */
         .dashboard-content { display: -webkit-flex; display: flex; -webkit-justify-content: space-around; justify-content: space-around; -webkit-align-items: center; align-items: center; flex: 1; padding: 0 50px; }
@@ -65,30 +65,44 @@
         .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 100px; height: 100px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 30px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
         /* --- PAGE 2: RESULTS --- */
-        /* Changed from GRID to FLEXBOX for TV compatibility */
-        .results-grid { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; -webkit-justify-content: space-between; justify-content: space-between; flex: 1; align-content: flex-start; }
-        .res-card { width: calc(50% - 10px); margin-bottom: 20px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; box-sizing: border-box; }
-        .res-card.newest { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2); background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(15,23,42,0.9) 100%); }
-        .rc-title { font-size: 22px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between;}
-        .rc-cat { font-size: 13px; background: #1e293b; padding: 4px 8px; border-radius: 5px; color: #94a3b8; }
-        .rc-row { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
+        .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; }
+        
+        /* Newest Result Styling (Bigger and Full Width) */
+        .res-card.newest { 
+            grid-column: span 2; 
+            border-color: #10b981; 
+            box-shadow: 0 0 25px rgba(16,185,129,0.3); 
+            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.95) 100%); 
+            padding: 25px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .res-card.newest .rc-title { font-size: 32px; border-bottom: 2px solid rgba(16,185,129,0.3); padding-bottom: 15px; margin-bottom: 18px; }
+        .res-card.newest .rc-cat { font-size: 18px; padding: 6px 12px; background: #064e3b; color: #34d399; }
+        .res-card.newest .rc-row { padding: 12px 20px; margin-bottom: 10px; }
+        .res-card.newest .rc-name { font-size: 26px; }
+        .res-card.newest .rc-team { font-size: 16px; padding: 6px 12px; }
+
+        .rc-title { font-size: 24px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .rc-cat { font-size: 14px; background: #1e293b; padding: 4px 8px; border-radius: 5px; color: #94a3b8; font-weight: bold; text-transform: uppercase;}
+        .rc-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; }
         .rc-row.first { border-left: 5px solid #fbbf24; }
         .rc-row.second { border-left: 5px solid #cbd5e1; }
         .rc-row.third { border-left: 5px solid #b45309; }
-        .rc-name { font-size: 18px; font-weight: bold; color: #f1f5f9; }
-        .rc-team { font-size: 13px; font-weight: bold; padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.1); }
+        .rc-name { font-size: 22px; font-weight: bold; color: #f1f5f9; }
+        .rc-team { font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 5px; background: rgba(255,255,255,0.1); }
         .rc-team.a { color: #fb7185; } .rc-team.b { color: #818cf8; }
 
         /* --- PAGE 3: CATEGORY SCORES --- */
-        .category-container { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; gap: 30px; flex: 1; -webkit-align-items: center; align-items: center; padding-top: 30px; }
+        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 30px; flex: 1; align-items: center; padding-top: 20px; }
         .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px 20px; text-align: center; }
         .cat-title { font-size: 35px; font-weight: bold; color: #fbbf24; margin-bottom: 30px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
-        .cat-team-row { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 15px; }
+        .cat-team-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 15px; }
         .cat-tname { font-size: 26px; font-weight: bold; }
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 40px; font-weight: 900; color: #fff; }
 
-        /* --- POINT TABLES (NO SCROLLING) --- */
+        /* --- POINT TABLES --- */
         .table-container { 
             background: rgba(15, 23, 42, 0.8); border-radius: 20px; padding: 15px; 
             border: 1px solid rgba(255,255,255,0.1); flex: 1; 
@@ -97,13 +111,13 @@
         .pt-table { width: 100%; border-collapse: collapse; }
         .pt-header { background: rgba(0,0,0,0.8); border-radius: 15px 15px 0 0; }
         
-        .pt-table th, .pt-table td { padding: 9px 10px; text-align: center; font-size: 19px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pt-table th, .pt-table td { padding: 8px 10px; text-align: center; font-size: 19px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 16px; border-bottom: 2px solid #334155; }
         
         .no-scroll-wrapper { flex: 1; background: rgba(0,0,0,0.4); border-radius: 0 0 15px 15px; overflow: hidden; }
         
         .t-left { text-align: left !important; padding-left: 20px !important; }
-        .s-tag { font-size: 11px; background: #334155; padding: 3px 6px; border-radius: 4px; color: #cbd5e1; margin-left: 8px; font-weight: normal; vertical-align: middle;}
+        .s-tag { font-size: 12px; background: #334155; padding: 4px 6px; border-radius: 4px; color: #cbd5e1; margin-left: 8px; font-weight: bold; vertical-align: middle; text-transform: uppercase;}
         .s-grp { background: #78350f; color: #fcd34d; }
         
         .pt-team-a { color: #fb7185; font-size: 22px !important; } 
@@ -116,16 +130,18 @@
 </head>
 <body>
 
-    <!-- 100% Working Audio Links from Pixabay CDN -->
+    <!-- Audio Links -->
     <audio id="sound-score" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3" preload="auto"></audio>
     <audio id="sound-result" src="https://cdn.pixabay.com/download/audio/2022/10/09/audio_2d8b5a0e36.mp3?filename=cinematic-hit-121980.mp3" preload="auto"></audio>
 
     <div id="flash-screen"></div>
 
     <div id="start-overlay" onclick="startApp()">
-        <button class="start-btn">Start TV Display</button>
-        <p style="margin-top:20px; font-size:20px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക (For Audio & Start)</p>
+        <button class="start-btn">Start TV Display (Full Screen)</button>
+        <p style="margin-top:20px; font-size:20px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക</p>
     </div>
+
+    <button id="fullscreen-btn" onclick="toggleFullScreen()">[  ] Full Screen</button>
 
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
 
@@ -156,7 +172,6 @@
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
             <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
@@ -179,7 +194,6 @@
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
             <div class="page-title">ഏറ്റവും പുതിയ ഫലങ്ങൾ (LATEST RESULTS)</div>
@@ -192,7 +206,6 @@
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
             <div class="page-title">വിഭാഗം തിരിച്ചുള്ള പോയിന്റുകൾ (CATEGORY SCORES)</div>
@@ -221,7 +234,6 @@
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
@@ -245,16 +257,15 @@
             </div>
         </div>
 
-        <!-- PAGE 5: SENIOR TABLE (PART 1) -->
+        <!-- PAGE 5: SENIOR + GENERAL (STAGE) -->
         <div id="view-5" class="view-container">
             <div class="header">
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
-            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 1</div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (STAGE)</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
                     <thead>
@@ -270,21 +281,20 @@
                     </thead>
                 </table>
                 <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-senior-1"></tbody></table>
+                    <table class="pt-table"><tbody id="table-body-senior-stage"></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- PAGE 6: SENIOR TABLE (PART 2) -->
+        <!-- PAGE 6: SENIOR + GENERAL (NON-STAGE) -->
         <div id="view-6" class="view-container">
             <div class="header">
                 <h1 class="fest-title">
                     <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
                     ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
                 </h1>
             </div>
-            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ (SENIOR) - Part 2</div>
+            <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (NON-STAGE)</div>
             <div class="table-container">
                 <table class="pt-table pt-header">
                     <thead>
@@ -300,47 +310,32 @@
                     </thead>
                 </table>
                 <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-senior-2"></tbody></table>
-                </div>
-            </div>
-        </div>
-
-        <!-- PAGE 7: GENERAL TABLE -->
-        <div id="view-7" class="view-container">
-            <div class="header">
-                <h1 class="fest-title">
-                    <svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg>
-                    ആവാസേ ഫുനൂൻ 
-                    <span style="font-family:'Anek Malayalam', sans-serif; font-size:24px; margin-left:15px; color:#cbd5e1; font-weight:700;">തത്സമയ ഫലങ്ങൾ</span>
-                </h1>
-            </div>
-            <div class="page-title">പോയിന്റ് ടേബിൾ - ജനറൽ (GENERAL)</div>
-            <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program Details)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-7">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-7">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
-                <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-general"></tbody></table>
+                    <table class="pt-table"><tbody id="table-body-senior-nonstage"></tbody></table>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <!-- Strictly ES5 JS for Smart TVs -->
     <script>
         var appStarted = false;
         
+        function toggleFullScreen() {
+            var elem = document.documentElement;
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) { elem.requestFullscreen(); }
+                else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+                else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+            } else {
+                if (document.exitFullscreen) { document.exitFullscreen(); }
+            }
+        }
+
         function startApp() {
+            // സ്ക്രീൻ മുഴുവനായും കാണിക്കാൻ
+            toggleFullScreen();
+
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
@@ -349,14 +344,7 @@
             var s2 = document.getElementById('sound-result');
             
             s1.muted = true; s2.muted = true;
-            
-            // Safety check for older TVs that might not support Promise on .play()
-            try {
-                var p1 = s1.play(); 
-                var p2 = s2.play();
-                if (p1 !== undefined && p1.catch) { p1.catch(function(){}); }
-                if (p2 !== undefined && p2.catch) { p2.catch(function(){}); }
-            } catch(e) {}
+            s1.play().catch(function(){}); s2.play().catch(function(){});
             
             setTimeout(function() {
                 s1.pause(); s2.pause();
@@ -374,13 +362,11 @@
                 var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); 
                 audio.currentTime = 0; 
                 audio.volume = 1;
-                var playPromise = audio.play(); 
-                if (playPromise !== undefined && playPromise.catch) {
-                    playPromise.catch(function(error) { console.error("Audio Play Error:", error); });
-                }
+                audio.play(); 
             } catch(e) { console.error("Audio Play Error:", e); }
         }
         
+        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & തനിയെ പേജ് മാറുന്ന ഫംഗ്ഷൻ
         function triggerEpicReveal() {
             playSound('result');
             var flash = document.getElementById('flash-screen');
@@ -394,8 +380,9 @@
             
             showToast("🔥 പുതിയ റിസൾട്ട് പ്രസിദ്ധീകരിച്ചു! 🔥");
             
+            // തനിയെ 2-ാം പേജിലേക്ക് (Results Page) മാറുന്നു
             currentViewIndex = 2;
-            for(var i=1; i<=7; i++) {
+            for(var i=1; i<=6; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
             }
             document.getElementById('view-2').className = 'view-container view-active';
@@ -403,19 +390,21 @@
 
         function showToast(msg) {
             var t = document.getElementById('toast'); 
-            t.innerHTML = msg; // Changed from innerText for better old-TV support
+            t.innerText = msg; 
             t.className = 'show';
             setTimeout(function(){ t.className = ''; }, 5000);
         }
 
         var currentViewIndex = 1;
+        var totalViews = 6;
         
+        // 15 സെക്കൻഡ് ഇടവിട്ട് പേജുകൾ മാറും
         setInterval(function() {
-            for(var i=1; i<=7; i++) {
+            for(var i=1; i<=totalViews; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
             }
             currentViewIndex++;
-            if(currentViewIndex > 7) currentViewIndex = 1;
+            if(currentViewIndex > totalViews) currentViewIndex = 1;
             document.getElementById('view-' + currentViewIndex).className = 'view-container view-active';
         }, 15000); 
 
@@ -460,6 +449,7 @@
                 var tName = tProg.name;
                 var tTag = "<span class='s-tag'>" + tProg.type + "</span>";
                 if(tProg.isGroup) tTag += "<span class='s-tag s-grp'>👥 Group</span>";
+                if(tProg.cat === 'General') tTag += "<span class='s-tag' style='background:#064e3b;color:#34d399;'>General</span>";
 
                 var tRes = null;
                 for(var j=0; j<state.results.length; j++) { if(state.results[j].progId === tProg.id) { tRes = state.results[j]; break; } }
@@ -470,7 +460,9 @@
                     var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 10 : 5; var tT = tProg.isGroup ? 5 : 3;
                     
                     var checkPts = function(ids, pts) {
-                        var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+                        var arr = [];
+                        if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
+
                         for(var k=0; k<arr.length; k++) {
                             var cand = getCand(arr[k]);
                             if(cand) {
@@ -499,33 +491,34 @@
             return tbody;
         }
 
-        // ES5 compliant logic (Removed ES6 arrow functions and optional chaining)
-        var getCandNamesString = function(ids) {
-            var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+        function getCandNamesString(ids) {
+            var arr = [];
+            if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
             if(arr.length === 0) return '-';
+            
             var names = [];
-            for (var i = 0; i < arr.length; i++) {
+            for(var i=0; i<arr.length; i++) {
                 var c = getCand(arr[i]);
-                names.push(c && c.name ? c.name : '-');
+                names.push(c ? c.name : '-');
             }
             return names.join(', ');
-        };
+        }
 
-        var getTeamNamesString = function(ids) {
-            var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+        function getTeamNamesString(ids) {
+            var arr = [];
+            if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
             if(arr.length === 0) return '-';
+            
             var teams = [];
-            for (var i = 0; i < arr.length; i++) {
+            for(var i=0; i<arr.length; i++) {
                 var c = getCand(arr[i]);
-                if (c) {
+                if(c) {
                     var tName = getTeamName(c.team);
-                    if (teams.indexOf(tName) === -1) {
-                        teams.push(tName);
-                    }
+                    if(teams.indexOf(tName) === -1) teams.push(tName);
                 }
             }
             return teams.length > 0 ? teams.join(' & ') : '-';
-        };
+        }
 
         function renderAll() {
             if (!appStarted) return;
@@ -537,7 +530,8 @@
                 var fPts = isGroup ? 15 : 10; var sPts = isGroup ? 10 : 5; var tPts = isGroup ? 5 : 3;
 
                 var addPts = function(ids, pts) {
-                    var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+                    var arr = [];
+                    if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
                     for(var k=0; k<arr.length; k++) {
                         var c = getCand(arr[k]);
                         if(c && stats[c.team]) { stats[c.team].total += pts; stats[c.team][cat.toLowerCase()] += pts; }
@@ -561,24 +555,26 @@
 
             var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
             
-            // Using innerHTML instead of innerText for better TV browser compatibility
-            document.getElementById('name-teamA-1').innerHTML = taName; document.getElementById('name-teamB-1').innerHTML = tbName;
-            document.getElementById('name-teamA-2').innerHTML = taName; document.getElementById('name-teamB-2').innerHTML = tbName;
-            document.getElementById('name-teamA-3').innerHTML = taName; document.getElementById('name-teamB-3').innerHTML = tbName;
+            // Set Names dynamically everywhere
+            document.getElementById('name-teamA-1').innerText = taName; document.getElementById('name-teamB-1').innerText = tbName;
+            document.getElementById('name-teamA-2').innerText = taName; document.getElementById('name-teamB-2').innerText = tbName;
+            document.getElementById('name-teamA-3').innerText = taName; document.getElementById('name-teamB-3').innerText = tbName;
+            document.getElementById('name-teamA-4').innerText = taName; document.getElementById('name-teamB-4').innerText = tbName;
             
-            document.getElementById('th-teamA-4').innerHTML = taName; document.getElementById('th-teamB-4').innerHTML = tbName;
-            document.getElementById('th-teamA-5').innerHTML = taName; document.getElementById('th-teamB-5').innerHTML = tbName;
-            document.getElementById('th-teamA-6').innerHTML = taName; document.getElementById('th-teamB-6').innerHTML = tbName;
-            document.getElementById('th-teamA-7').innerHTML = taName; document.getElementById('th-teamB-7').innerHTML = tbName;
+            document.getElementById('th-teamA-4').innerText = taName; document.getElementById('th-teamB-4').innerText = tbName;
+            document.getElementById('th-teamA-5').innerText = taName; document.getElementById('th-teamB-5').innerText = tbName;
+            document.getElementById('th-teamA-6').innerText = taName; document.getElementById('th-teamB-6').innerText = tbName;
 
-            document.getElementById('score-teamA').innerHTML = stats.teamA.total; document.getElementById('score-teamB').innerHTML = stats.teamB.total;
-            document.getElementById('cat-j-a').innerHTML = stats.teamA.junior; document.getElementById('cat-j-b').innerHTML = stats.teamB.junior;
-            document.getElementById('cat-s-a').innerHTML = stats.teamA.senior; document.getElementById('cat-s-b').innerHTML = stats.teamB.senior;
-            document.getElementById('cat-g-a').innerHTML = stats.teamA.general; document.getElementById('cat-g-b').innerHTML = stats.teamB.general;
+            document.getElementById('score-teamA').innerText = stats.teamA.total; document.getElementById('score-teamB').innerText = stats.teamB.total;
+            document.getElementById('cat-j-a').innerText = stats.teamA.junior; document.getElementById('cat-j-b').innerText = stats.teamB.junior;
+            document.getElementById('cat-s-a').innerText = stats.teamA.senior; document.getElementById('cat-s-b').innerText = stats.teamB.senior;
+            document.getElementById('cat-g-a').innerText = stats.teamA.general; document.getElementById('cat-g-b').innerText = stats.teamB.general;
 
             var resHtml = "";
-            if (sortedRes.length === 0) resHtml = "<div style='color:#64748b; width:100%; text-align:center; padding: 20px;'><h2>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2></div>";
-            for(var r=0; r<Math.min(sortedRes.length, 6); r++) {
+            if (sortedRes.length === 0) resHtml = "<h2 style='color:#64748b; grid-column:span 2; text-align:center;'>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2>";
+            
+            // Show only top 5 results so it fits beautifully, newest takes full width
+            for(var r=0; r<Math.min(sortedRes.length, 5); r++) {
                 var latestRes = sortedRes[r]; var latestProg = getProg(latestRes.progId);
                 var pName = latestProg ? latestProg.name : '-'; var pCat = latestProg ? latestProg.cat : '';
                 var isNew = (r === 0) ? " newest" : "";
@@ -594,22 +590,26 @@
             }
             document.getElementById('results-grid-container').innerHTML = resHtml;
 
-            var juniorProgs = [], seniorProgs = [], generalProgs = [];
+            // Split Tables Based on Category AND Type (Stage/Non-Stage)
+            var juniorProgs = [], seniorStageProgs = [], seniorNonStageProgs = [];
+            
             for (var p = 0; p < state.programs.length; p++) {
-                if(state.programs[p].cat === 'Junior') juniorProgs.push(state.programs[p]);
-                else if(state.programs[p].cat === 'Senior') seniorProgs.push(state.programs[p]);
-                else if(state.programs[p].cat === 'General') generalProgs.push(state.programs[p]);
+                var prg = state.programs[p];
+                if(prg.cat === 'Junior') {
+                    juniorProgs.push(prg);
+                } else if(prg.cat === 'Senior' || prg.cat === 'General') {
+                    if (prg.type === 'Stage') {
+                        seniorStageProgs.push(prg);
+                    } else {
+                        seniorNonStageProgs.push(prg);
+                    }
+                }
             }
 
             document.getElementById('table-body-junior').innerHTML = generateTableRows(juniorProgs);
-            
-            var halfSen = Math.ceil(seniorProgs.length / 2);
-            document.getElementById('table-body-senior-1').innerHTML = generateTableRows(seniorProgs.slice(0, halfSen));
-            document.getElementById('table-body-senior-2').innerHTML = generateTableRows(seniorProgs.slice(halfSen));
-            
-            document.getElementById('table-body-general').innerHTML = generateTableRows(generalProgs);
+            document.getElementById('table-body-senior-stage').innerHTML = generateTableRows(seniorStageProgs);
+            document.getElementById('table-body-senior-nonstage').innerHTML = generateTableRows(seniorNonStageProgs);
         }
     </script>
 </body>
 </html>
-
