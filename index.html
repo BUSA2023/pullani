@@ -14,10 +14,13 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { 
+            height: 100%; width: 100%; margin: 0; padding: 0;
+        }
         body { 
             font-family: 'Anek Malayalam', sans-serif; 
             background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
-            color: #ffffff; overflow: hidden; height: 100vh; width: 100vw;
+            color: #ffffff; overflow: hidden;
         }
         .num-font { font-family: 'Outfit', sans-serif; }
         .fest-title { font-family: 'Baloo Chettan 2', sans-serif; font-weight: 800; }
@@ -26,7 +29,7 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
             display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; 
-            -webkit-justify-content: center; justify-content: center; flex-direction: column; cursor: pointer;
+            -webkit-justify-content: center; justify-content: center; -webkit-flex-direction: column; flex-direction: column; cursor: pointer;
         }
         .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
         .start-btn:hover { transform: scale(1.05); }
@@ -46,7 +49,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 50px; color: #f8fafc; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; }
+        .header h1 { font-size: 50px; color: #f8fafc; letter-spacing: 1px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
         /* വെക്റ്റർ ലോഗോക്ക് ഗ്ലോ എഫക്ട് */
         .header-logo { width: 55px; height: 55px; margin-right: 15px; filter: drop-shadow(0 0 15px rgba(236,72,153,0.6)); }
         
@@ -62,12 +65,13 @@
         .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 100px; height: 100px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 30px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
         /* --- PAGE 2: RESULTS --- */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
-        .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; }
+        /* Changed from GRID to FLEXBOX for TV compatibility */
+        .results-grid { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; -webkit-justify-content: space-between; justify-content: space-between; flex: 1; align-content: flex-start; }
+        .res-card { width: calc(50% - 10px); margin-bottom: 20px; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 18px; box-sizing: border-box; }
         .res-card.newest { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.2); background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(15,23,42,0.9) 100%); }
-        .rc-title { font-size: 22px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between;}
+        .rc-title { font-size: 22px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between;}
         .rc-cat { font-size: 13px; background: #1e293b; padding: 4px 8px; border-radius: 5px; color: #94a3b8; }
-        .rc-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; }
+        .rc-row { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 8px; margin-bottom: 6px; }
         .rc-row.first { border-left: 5px solid #fbbf24; }
         .rc-row.second { border-left: 5px solid #cbd5e1; }
         .rc-row.third { border-left: 5px solid #b45309; }
@@ -76,10 +80,10 @@
         .rc-team.a { color: #fb7185; } .rc-team.b { color: #818cf8; }
 
         /* --- PAGE 3: CATEGORY SCORES --- */
-        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 30px; flex: 1; align-items: center; padding-top: 30px; }
+        .category-container { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; gap: 30px; flex: 1; -webkit-align-items: center; align-items: center; padding-top: 30px; }
         .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px 20px; text-align: center; }
         .cat-title { font-size: 35px; font-weight: bold; color: #fbbf24; margin-bottom: 30px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px;}
-        .cat-team-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 15px; }
+        .cat-team-row { display: -webkit-flex; display: flex; -webkit-justify-content: space-between; justify-content: space-between; -webkit-align-items: center; align-items: center; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 15px; }
         .cat-tname { font-size: 26px; font-weight: bold; }
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 40px; font-weight: 900; color: #fff; }
@@ -345,7 +349,14 @@
             var s2 = document.getElementById('sound-result');
             
             s1.muted = true; s2.muted = true;
-            var p1 = s1.play(); var p2 = s2.play();
+            
+            // Safety check for older TVs that might not support Promise on .play()
+            try {
+                var p1 = s1.play(); 
+                var p2 = s2.play();
+                if (p1 !== undefined && p1.catch) { p1.catch(function(){}); }
+                if (p2 !== undefined && p2.catch) { p2.catch(function(){}); }
+            } catch(e) {}
             
             setTimeout(function() {
                 s1.pause(); s2.pause();
@@ -363,11 +374,13 @@
                 var audio = document.getElementById(type === 'score' ? 'sound-score' : 'sound-result'); 
                 audio.currentTime = 0; 
                 audio.volume = 1;
-                audio.play(); 
+                var playPromise = audio.play(); 
+                if (playPromise !== undefined && playPromise.catch) {
+                    playPromise.catch(function(error) { console.error("Audio Play Error:", error); });
+                }
             } catch(e) { console.error("Audio Play Error:", e); }
         }
         
-        // സിനിമാറ്റിക് ഫ്ലാഷ് എഫക്ട് & തനിയെ പേജ് മാറുന്ന ഫംഗ്ഷൻ
         function triggerEpicReveal() {
             playSound('result');
             var flash = document.getElementById('flash-screen');
@@ -381,7 +394,6 @@
             
             showToast("🔥 പുതിയ റിസൾട്ട് പ്രസിദ്ധീകരിച്ചു! 🔥");
             
-            // തനിയെ 2-ാം പേജിലേക്ക് (Results Page) മാറുന്നു
             currentViewIndex = 2;
             for(var i=1; i<=7; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
@@ -391,14 +403,13 @@
 
         function showToast(msg) {
             var t = document.getElementById('toast'); 
-            t.innerText = msg; 
+            t.innerHTML = msg; // Changed from innerText for better old-TV support
             t.className = 'show';
             setTimeout(function(){ t.className = ''; }, 5000);
         }
 
         var currentViewIndex = 1;
         
-        // 15 സെക്കൻഡ് ഇടവിട്ട് പേജുകൾ മാറും
         setInterval(function() {
             for(var i=1; i<=7; i++) {
                 document.getElementById('view-' + i).className = 'view-container';
@@ -440,7 +451,6 @@
             });
         });
 
-        // 7-Column Table Generator 
         function generateTableRows(programList) {
             var tbody = "";
             if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b; padding:30px;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
@@ -489,17 +499,32 @@
             return tbody;
         }
 
-        const getCandNamesString = (ids) => {
-            const arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+        // ES5 compliant logic (Removed ES6 arrow functions and optional chaining)
+        var getCandNamesString = function(ids) {
+            var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
             if(arr.length === 0) return '-';
-            return arr.map(id => getCand(id)?.name || '-').join(', ');
+            var names = [];
+            for (var i = 0; i < arr.length; i++) {
+                var c = getCand(arr[i]);
+                names.push(c && c.name ? c.name : '-');
+            }
+            return names.join(', ');
         };
 
-        const getTeamNamesString = (ids) => {
-            const arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+        var getTeamNamesString = function(ids) {
+            var arr = Array.isArray(ids) ? ids : (ids ? [ids] : []);
             if(arr.length === 0) return '-';
-            const teams = arr.map(id => { const c = getCand(id); return c ? getTeamName(c.team) : '-'; });
-            return [...new Set(teams)].join(' & ');
+            var teams = [];
+            for (var i = 0; i < arr.length; i++) {
+                var c = getCand(arr[i]);
+                if (c) {
+                    var tName = getTeamName(c.team);
+                    if (teams.indexOf(tName) === -1) {
+                        teams.push(tName);
+                    }
+                }
+            }
+            return teams.length > 0 ? teams.join(' & ') : '-';
         };
 
         function renderAll() {
@@ -535,22 +560,24 @@
             prevScoreA = stats.teamA.total; prevScoreB = stats.teamB.total; prevTotalRes = sortedRes.length;
 
             var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
-            document.getElementById('name-teamA-1').innerText = taName; document.getElementById('name-teamB-1').innerText = tbName;
-            document.getElementById('name-teamA-2').innerText = taName; document.getElementById('name-teamB-2').innerText = tbName;
-            document.getElementById('name-teamA-3').innerText = taName; document.getElementById('name-teamB-3').innerText = tbName;
             
-            document.getElementById('th-teamA-4').innerText = taName; document.getElementById('th-teamB-4').innerText = tbName;
-            document.getElementById('th-teamA-5').innerText = taName; document.getElementById('th-teamB-5').innerText = tbName;
-            document.getElementById('th-teamA-6').innerText = taName; document.getElementById('th-teamB-6').innerText = tbName;
-            document.getElementById('th-teamA-7').innerText = taName; document.getElementById('th-teamB-7').innerText = tbName;
+            // Using innerHTML instead of innerText for better TV browser compatibility
+            document.getElementById('name-teamA-1').innerHTML = taName; document.getElementById('name-teamB-1').innerHTML = tbName;
+            document.getElementById('name-teamA-2').innerHTML = taName; document.getElementById('name-teamB-2').innerHTML = tbName;
+            document.getElementById('name-teamA-3').innerHTML = taName; document.getElementById('name-teamB-3').innerHTML = tbName;
+            
+            document.getElementById('th-teamA-4').innerHTML = taName; document.getElementById('th-teamB-4').innerHTML = tbName;
+            document.getElementById('th-teamA-5').innerHTML = taName; document.getElementById('th-teamB-5').innerHTML = tbName;
+            document.getElementById('th-teamA-6').innerHTML = taName; document.getElementById('th-teamB-6').innerHTML = tbName;
+            document.getElementById('th-teamA-7').innerHTML = taName; document.getElementById('th-teamB-7').innerHTML = tbName;
 
-            document.getElementById('score-teamA').innerText = stats.teamA.total; document.getElementById('score-teamB').innerText = stats.teamB.total;
-            document.getElementById('cat-j-a').innerText = stats.teamA.junior; document.getElementById('cat-j-b').innerText = stats.teamB.junior;
-            document.getElementById('cat-s-a').innerText = stats.teamA.senior; document.getElementById('cat-s-b').innerText = stats.teamB.senior;
-            document.getElementById('cat-g-a').innerText = stats.teamA.general; document.getElementById('cat-g-b').innerText = stats.teamB.general;
+            document.getElementById('score-teamA').innerHTML = stats.teamA.total; document.getElementById('score-teamB').innerHTML = stats.teamB.total;
+            document.getElementById('cat-j-a').innerHTML = stats.teamA.junior; document.getElementById('cat-j-b').innerHTML = stats.teamB.junior;
+            document.getElementById('cat-s-a').innerHTML = stats.teamA.senior; document.getElementById('cat-s-b').innerHTML = stats.teamB.senior;
+            document.getElementById('cat-g-a').innerHTML = stats.teamA.general; document.getElementById('cat-g-b').innerHTML = stats.teamB.general;
 
             var resHtml = "";
-            if (sortedRes.length === 0) resHtml = "<h2 style='color:#64748b; grid-column:span 2; text-align:center;'>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2>";
+            if (sortedRes.length === 0) resHtml = "<div style='color:#64748b; width:100%; text-align:center; padding: 20px;'><h2>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2></div>";
             for(var r=0; r<Math.min(sortedRes.length, 6); r++) {
                 var latestRes = sortedRes[r]; var latestProg = getProg(latestRes.progId);
                 var pName = latestProg ? latestProg.name : '-'; var pCat = latestProg ? latestProg.cat : '';
@@ -585,3 +612,4 @@
     </script>
 </body>
 </html>
+
