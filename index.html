@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ആവാസേ ഫുനൂൻ - TV Live Display</title>
+    <title>ആവാസേ ഫുനൂൻ - Live Display</title>
     
     <!-- Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
@@ -24,6 +24,23 @@
         .num-font { font-family: 'Outfit', sans-serif; }
         .fest-title { font-family: 'Baloo Chettan 2', sans-serif; font-weight: 800; }
         
+        /* ZERO GRAVITY BACKGROUND EFFECT */
+        .zero-gravity-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .orb {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: floatOrb infinite linear; opacity: 0;
+        }
+        @keyframes floatOrb {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+        }
+
         #start-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
@@ -33,16 +50,12 @@
         .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
         .start-btn:hover { transform: scale(1.05); }
 
-        /* സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
-        #flash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9998; opacity: 0; pointer-events: none;
-        }
+        #flash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9998; opacity: 0; pointer-events: none; }
 
         .view-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: none; padding: 15px 30px; -webkit-flex-direction: column; flex-direction: column;
-            animation: fadeIn 1s ease-in-out;
+            animation: fadeIn 1s ease-in-out; overflow: hidden;
         }
         .view-active { display: -webkit-flex; display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
@@ -62,54 +75,25 @@
         .huge-points { font-size: 13vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 80px; height: 80px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 24px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
 
-        /* --- STATS ROW (NEW) --- */
-        .stats-row {
-            display: -webkit-flex; display: flex; justify-content: center; gap: 30px;
-            margin-top: 20px; padding-bottom: 10px;
-        }
-        .stat-box {
-            background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 15px 30px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            min-width: 180px;
-        }
+        .stats-row { display: -webkit-flex; display: flex; justify-content: center; gap: 30px; margin-top: 20px; padding-bottom: 10px; }
+        .stat-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 180px; }
         .stat-value { font-size: 35px; font-weight: 900; color: #34d399; line-height: 1.2; text-shadow: 0 0 10px rgba(52,211,153,0.3);}
         .stat-label { font-size: 14px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;}
 
         /* --- PAGE 2: RESULTS --- */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; overflow-y: auto; padding-right:10px; }
+        .results-grid::-webkit-scrollbar { display: none; }
         .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; position: relative; }
         
-        .res-card.newest { 
-            grid-column: span 2; 
-            border-color: #10b981; 
-            box-shadow: 0 0 25px rgba(16,185,129,0.3); 
-            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.95) 100%); 
-            padding: 20px;
-            display: flex; flex-direction: column; justify-content: center;
-        }
+        .res-card.newest { grid-column: span 2; border-color: #10b981; box-shadow: 0 0 25px rgba(16,185,129,0.3); background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.95) 100%); padding: 20px; display: flex; flex-direction: column; justify-content: center; }
         .res-card.newest .rc-title { font-size: 28px; border-bottom: 2px solid rgba(16,185,129,0.3); padding-bottom: 10px; margin-bottom: 12px; padding-right: 120px; }
         .res-card.newest .rc-cat { font-size: 16px; padding: 4px 10px; background: #064e3b; color: #34d399; }
         .res-card.newest .rc-row { padding: 10px 18px; margin-bottom: 8px; }
         .res-card.newest .rc-name { font-size: 24px; }
         .res-card.newest .rc-team { font-size: 15px; padding: 5px 10px; }
 
-        .corner-ribbon {
-            width: 140px; height: 140px;
-            overflow: hidden; position: absolute;
-            top: 0; right: 0; z-index: 10;
-            border-radius: 0 15px 0 0; pointer-events: none;
-        }
-        .corner-ribbon::before {
-            content: '✨ LATEST';
-            position: absolute; display: block;
-            width: 200px; padding: 8px 0;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-            color: #78350f; font-weight: 900; font-size: 14px; text-align: center;
-            right: -48px; top: 28px;
-            transform: rotate(45deg); letter-spacing: 2px;
-        }
+        .corner-ribbon { width: 140px; height: 140px; overflow: hidden; position: absolute; top: 0; right: 0; z-index: 10; border-radius: 0 15px 0 0; pointer-events: none; }
+        .corner-ribbon::before { content: '✨ LATEST'; position: absolute; display: block; width: 200px; padding: 8px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow: 0 5px 10px rgba(0,0,0,0.4); color: #78350f; font-weight: 900; font-size: 14px; text-align: center; right: -48px; top: 28px; transform: rotate(45deg); letter-spacing: 2px; }
 
         .rc-title { font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
         .rc-cat { font-size: 12px; background: #1e293b; padding: 3px 6px; border-radius: 4px; color: #94a3b8; font-weight: bold; text-transform: uppercase;}
@@ -122,7 +106,8 @@
         .rc-team.a { color: #fb7185; } .rc-team.b { color: #818cf8; }
 
         /* --- PAGE 3: CATEGORY SCORES --- */
-        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 20px; flex: 1; align-items: center; padding-top: 10px; }
+        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 20px; flex: 1; align-items: center; padding-top: 10px; overflow-y: auto;}
+        .category-container::-webkit-scrollbar { display: none; }
         .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px 20px; text-align: center; }
         .cat-title { font-size: 30px; font-weight: bold; color: #fbbf24; margin-bottom: 25px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
         .cat-team-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 12px; }
@@ -130,15 +115,10 @@
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 35px; font-weight: 900; color: #fff; }
 
-        /* --- POINT TABLES (COMPACT) --- */
-        .table-container { 
-            background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; 
-            border: 1px solid rgba(255,255,255,0.1); flex: 1; 
-            display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; 
-        }
-        .pt-table { width: 100%; border-collapse: collapse; }
+        /* --- POINT TABLES (COMPACT & MOBILE FRIENDLY) --- */
+        .table-container { background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; }
+        .pt-table { width: 100%; border-collapse: collapse; min-width: 600px; }
         .pt-header { background: rgba(0,0,0,0.8); border-radius: 10px 10px 0 0; }
-        
         .pt-table th, .pt-table td { padding: 4px 6px; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #334155; padding: 6px;}
         
@@ -147,13 +127,52 @@
         .t-left { text-align: left !important; padding-left: 15px !important; font-size: 15px !important;}
         .s-tag { font-size: 10px; background: #334155; padding: 2px 4px; border-radius: 3px; color: #cbd5e1; margin-left: 6px; font-weight: bold; vertical-align: middle; text-transform: uppercase;}
         .s-grp { background: #78350f; color: #fcd34d; }
-        
         .pt-team-a { color: #fb7185; font-size: 17px !important; } 
         .pt-team-b { color: #818cf8; font-size: 17px !important; }
         .br-left { border-left: 2px solid #334155; }
 
         #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
         #toast.show { transform: translateY(0); }
+
+        /* ================= MOBILE RESPONSIVE CSS ================= */
+        @media (max-width: 768px) {
+            .view-container { padding: 10px; overflow-y: auto;}
+            .header h1 { font-size: 26px; }
+            .header-logo { width: 30px; height: 30px; margin-right: 10px; }
+            .page-title { font-size: 14px; padding: 5px; margin-bottom: 10px; }
+            
+            /* Stats / Score Mobile */
+            .dashboard-content { flex-direction: column; padding: 5px; gap: 10px; }
+            .team-block { width: 100%; padding: 20px; border-radius: 20px;}
+            .team-name { font-size: 30px; }
+            .huge-points { font-size: 25vw; }
+            .vs-circle { width: 45px; height: 45px; font-size: 14px; margin: 5px 0; }
+            .stats-row { flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+            .stat-box { min-width: 45%; padding: 10px; flex: 1;}
+            .stat-value { font-size: 22px; }
+            .stat-label { font-size: 11px; }
+
+            /* Results Grid Mobile */
+            .results-grid { grid-template-columns: 1fr; }
+            .res-card.newest { grid-column: span 1; padding: 15px; }
+            .res-card.newest .rc-title { font-size: 20px; padding-right: 0; }
+            .res-card.newest .rc-name { font-size: 20px; }
+            .corner-ribbon { transform: scale(0.6); transform-origin: top right; }
+
+            /* Category Mobile */
+            .category-container { flex-direction: column; }
+            .cat-box { width: 100%; padding: 15px; margin-bottom: 10px;}
+            .cat-title { font-size: 20px; margin-bottom: 15px; }
+            .cat-team-row { padding: 10px 15px; }
+            .cat-tname { font-size: 18px; }
+            .cat-pts { font-size: 24px; }
+
+            /* Tables Mobile - Allows horizontal scrolling */
+            .no-scroll-wrapper { overflow-x: auto; overflow-y: auto;}
+            .pt-table th, .pt-table td { font-size: 12px !important; padding: 4px; }
+            .t-left { font-size: 12px !important; }
+            .pt-team-a, .pt-team-b { font-size: 13px !important; }
+        }
     </style>
 </head>
 <body>
@@ -163,11 +182,13 @@
     <!-- PLEASANT MAGICAL CHIME FOR NEW RESULT -->
     <audio id="sound-result" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
 
+    <!-- Zero Gravity Background Elements -->
+    <div class="zero-gravity-bg" id="zg-bg"></div>
     <div id="flash-screen"></div>
 
     <div id="start-overlay" onclick="startApp()">
-        <button class="start-btn">Start TV Display</button>
-        <p style="margin-top:20px; font-size:18px; color:#94a3b8;">TV റിമോട്ടിലെ OK/Enter ബട്ടൺ അമർത്തുക (തനിയെ ഫുൾ സ്ക്രീൻ ആവും)</p>
+        <button class="start-btn">Start Live Display</button>
+        <p style="margin-top:20px; font-size:16px; color:#94a3b8; text-align:center; padding:0 20px;">TV റിമോട്ടിലോ സ്ക്രീനിലോ ക്ലിക്ക് ചെയ്യുക<br>(തനിയെ ഫുൾ സ്ക്രീൻ ആവും)</p>
     </div>
 
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
@@ -212,7 +233,7 @@
                 </div>
             </div>
 
-            <!-- NEW STATS BANNER -->
+            <!-- STATS BANNER -->
             <div class="stats-row">
                 <div class="stat-box">
                     <div class="stat-value num-font" id="stat-programs">0</div>
@@ -227,8 +248,7 @@
                     <div class="stat-label">ടീമുകൾ</div>
                 </div>
                 <div class="stat-box">
-                    <!-- Venue Name -->
-                    <div class="stat-value" style="font-size: 26px; padding-top: 6px; color: #fbbf24; font-weight: bold; letter-spacing: 1px;">ഓറ ക്യാമ്പസ്</div>
+                    <div class="stat-value" style="font-size: 22px; padding-top: 5px; color: #fbbf24; font-weight: bold;">ഓറ ക്യാമ്പസ്</div>
                     <div class="stat-label">വേദി</div>
                 </div>
             </div>
@@ -276,21 +296,21 @@
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-4">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-4">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
                 <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-junior"></tbody></table>
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-4">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-4">Team B</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                                <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-junior"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -302,21 +322,21 @@
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (STAGE)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-5">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-5">Team B</th>
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-5">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-5">Team B</th>
                         </tr>
                         <tr>
                             <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
                             <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
                         </tr>
-                    </thead>
-                </table>
-                <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-senior-stage"></tbody></table>
+                        </thead>
+                        <tbody id="table-body-senior-stage"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -328,21 +348,21 @@
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (NON-STAGE)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-6">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-6">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
                 <div class="no-scroll-wrapper">
-                    <table class="pt-table"><tbody id="table-body-senior-nonstage"></tbody></table>
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-6">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-6">Team B</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                                <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-senior-nonstage"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -351,10 +371,36 @@
 
     <script>
         var appStarted = false;
+
+        // Zero Gravity Background Generator
+        function createZeroGravity() {
+            var bg = document.getElementById('zg-bg');
+            var colors = ['#ec4899', '#8b5cf6', '#fbbf24', '#34d399', '#fb7185'];
+            for(var i=0; i<25; i++) {
+                var orb = document.createElement('div');
+                orb.className = 'orb';
+                var size = Math.random() * 80 + 30; // 30px to 110px
+                orb.style.width = size + 'px';
+                orb.style.height = size + 'px';
+                orb.style.left = Math.random() * 100 + 'vw';
+                
+                var color = colors[Math.floor(Math.random() * colors.length)];
+                orb.style.background = 'radial-gradient(circle, ' + color + '22 0%, transparent 70%)';
+                
+                orb.style.animationDuration = (Math.random() * 15 + 15) + 's'; // 15s to 30s
+                orb.style.animationDelay = (Math.random() * 15) + 's';
+                
+                bg.appendChild(orb);
+            }
+        }
+        createZeroGravity();
         
+        // Anti-Sleep Hack (Keeps TV screen awake using a tiny invisible video stream)
         function preventSleep() {
             try {
-                if ('wakeLock' in navigator) { navigator.wakeLock.request('screen').catch(function(){}); }
+                if ('wakeLock' in navigator && typeof navigator.wakeLock.request === 'function') { 
+                    navigator.wakeLock.request('screen').catch(function(){}); 
+                }
                 var canvas = document.createElement('canvas'); canvas.width = 1; canvas.height = 1;
                 var ctx = canvas.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0,0,1,1);
                 var stream = canvas.captureStream(1);
@@ -367,7 +413,7 @@
 
         function toggleFullScreen() {
             var elem = document.documentElement;
-            if (!document.fullscreenElement) {
+            if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
                 if (elem.requestFullscreen) { elem.requestFullscreen(); }
                 else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
                 else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
@@ -383,7 +429,7 @@
                     audioElem.pause();
                     audioElem.currentTime = 0;
                     audioElem.muted = false;
-                }).catch(function(err) { console.log(err); });
+                }).catch(function(err) {});
             } else {
                 audioElem.pause();
                 audioElem.currentTime = 0;
@@ -398,7 +444,6 @@
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             
-            // TV ബ്രൗസറുകൾക്കുള്ള പ്രത്യേക Audio Unlock
             unlockAudio(document.getElementById('sound-score'));
             unlockAudio(document.getElementById('sound-result'));
             
@@ -417,10 +462,10 @@
                     audio.muted = false;
                     var playPromise = audio.play();
                     if (playPromise !== undefined && typeof playPromise.catch === 'function') {
-                        playPromise.catch(function(e) { console.error("Audio Play Error:", e); }); 
+                        playPromise.catch(function(e) {}); 
                     }
                 }
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
         
         function triggerEpicReveal() {
@@ -604,11 +649,10 @@
             
             prevScoreA = stats.teamA.total; prevScoreB = stats.teamB.total; prevTotalRes = sortedRes.length;
 
-            // UPDATE STATS ON PAGE 1
+            // Update Stats
             document.getElementById('stat-programs').innerText = state.programs.length;
             document.getElementById('stat-candidates').innerText = state.candidates.length;
-            var teamCount = 0;
-            for(var key in state.teams) { if(key !== 'admin') teamCount++; }
+            var teamCount = 0; for(var key in state.teams) { if(key !== 'admin') teamCount++; }
             document.getElementById('stat-teams').innerText = teamCount;
 
             var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
