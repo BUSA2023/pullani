@@ -55,12 +55,26 @@
 
         /* --- PAGE 1: TOTAL SCORE --- */
         .dashboard-content { display: -webkit-flex; display: flex; -webkit-justify-content: space-around; justify-content: space-around; -webkit-align-items: center; align-items: center; flex: 1; padding: 0 50px; }
-        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 40px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 30px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .team-name { font-size: 45px; font-weight: bold; margin-bottom: 5px; }
         .team-name.team-a { color: #fb7185; text-shadow: 0 0 20px rgba(251, 113, 133, 0.4); }
         .team-name.team-b { color: #818cf8; text-shadow: 0 0 20px rgba(129, 140, 248, 0.4); }
-        .huge-points { font-size: 14vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 90px; height: 90px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 26px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+        .huge-points { font-size: 13vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 80px; height: 80px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 24px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+
+        /* --- STATS ROW (NEW) --- */
+        .stats-row {
+            display: -webkit-flex; display: flex; justify-content: center; gap: 30px;
+            margin-top: 20px; padding-bottom: 10px;
+        }
+        .stat-box {
+            background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; padding: 15px 30px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            min-width: 180px;
+        }
+        .stat-value { font-size: 35px; font-weight: 900; color: #34d399; line-height: 1.2; text-shadow: 0 0 10px rgba(52,211,153,0.3);}
+        .stat-label { font-size: 14px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;}
 
         /* --- PAGE 2: RESULTS --- */
         .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; }
@@ -116,7 +130,7 @@
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 35px; font-weight: 900; color: #fff; }
 
-        /* --- POINT TABLES --- */
+        /* --- POINT TABLES (COMPACT) --- */
         .table-container { 
             background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; 
             border: 1px solid rgba(255,255,255,0.1); flex: 1; 
@@ -146,7 +160,7 @@
 
     <!-- LOCAL AUDIO FILE FOR SCORE UPDATE -->
     <audio id="sound-score" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
-    <!-- PLEASANT MAGICAL CHIME FOR NEW RESULT (No longer scary) -->
+    <!-- PLEASANT MAGICAL CHIME FOR NEW RESULT -->
     <audio id="sound-result" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
 
     <div id="flash-screen"></div>
@@ -179,12 +193,13 @@
 
     <div id="app" style="display:none; width: 100%; height: 100%; position: relative;">
         
-        <!-- PAGE 1 -->
+        <!-- PAGE 1: SCORE & STATS -->
         <div id="view-1" class="view-container view-active">
             <div class="header">
                 <h1 class="fest-title"><svg viewBox="0 0 100 100" class="header-logo"><use href="#logo-art" /></svg> ആവാസേ ഫുനൂൻ</h1>
             </div>
             <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
+            
             <div class="dashboard-content">
                 <div class="team-block">
                     <div class="team-name team-a" id="name-teamA-1">Team A</div>
@@ -196,6 +211,28 @@
                     <div class="huge-points num-font" id="score-teamB">0</div>
                 </div>
             </div>
+
+            <!-- NEW STATS BANNER -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value num-font" id="stat-programs">0</div>
+                    <div class="stat-label">മത്സരങ്ങൾ</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value num-font" id="stat-candidates">0</div>
+                    <div class="stat-label">കുട്ടികൾ</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value num-font" id="stat-teams">2</div>
+                    <div class="stat-label">ടീമുകൾ</div>
+                </div>
+                <div class="stat-box">
+                    <!-- Venue Name -->
+                    <div class="stat-value" style="font-size: 26px; padding-top: 6px; color: #fbbf24; font-weight: bold; letter-spacing: 1px;">ഓറ ക്യാമ്പസ്</div>
+                    <div class="stat-label">വേദി</div>
+                </div>
+            </div>
+
         </div>
 
         <!-- PAGE 2 -->
@@ -566,6 +603,13 @@
             }
             
             prevScoreA = stats.teamA.total; prevScoreB = stats.teamB.total; prevTotalRes = sortedRes.length;
+
+            // UPDATE STATS ON PAGE 1
+            document.getElementById('stat-programs').innerText = state.programs.length;
+            document.getElementById('stat-candidates').innerText = state.candidates.length;
+            var teamCount = 0;
+            for(var key in state.teams) { if(key !== 'admin') teamCount++; }
+            document.getElementById('stat-teams').innerText = teamCount;
 
             var taName = getTeamName('teamA'); var tbName = getTeamName('teamB');
             
