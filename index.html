@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ആവാസേ ഫുനൂൻ - Live Display</title>
+    <title>ആവാസേ ഫുനൂൻ - TV Live Display</title>
     
     <!-- Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
@@ -50,7 +50,22 @@
         .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
         .start-btn:hover { transform: scale(1.05); }
 
-        #flash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9998; opacity: 0; pointer-events: none; }
+        /* Full Screen Button */
+        #fullscreen-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            color: #94a3b8; padding: 10px 15px; border-radius: 8px; cursor: pointer;
+            z-index: 9000; font-size: 14px; font-weight: bold; transition: 0.3s;
+        }
+        #fullscreen-btn:hover {
+            background: rgba(236,72,153,0.8); color: white; border-color: #ec4899;
+        }
+
+        /* സ്ക്രീൻ ഫ്ലാഷ് എഫക്ട് */
+        #flash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 9998; opacity: 0; pointer-events: none;
+        }
 
         .view-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -115,7 +130,7 @@
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
         .cat-pts { font-size: 35px; font-weight: 900; color: #fff; }
 
-        /* --- POINT TABLES (COMPACT & MOBILE FRIENDLY) --- */
+        /* --- POINT TABLES (COMPACT, SINGLE LINE) --- */
         .table-container { background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; }
         .pt-table { width: 100%; border-collapse: collapse; min-width: 600px; }
         .pt-header { background: rgba(0,0,0,0.8); border-radius: 10px 10px 0 0; }
@@ -124,9 +139,14 @@
         
         .no-scroll-wrapper { flex: 1; background: rgba(0,0,0,0.4); border-radius: 0 0 10px 10px; overflow: hidden; }
         
-        .t-left { text-align: left !important; padding-left: 15px !important; font-size: 15px !important;}
-        .s-tag { font-size: 10px; background: #334155; padding: 2px 4px; border-radius: 3px; color: #cbd5e1; margin-left: 6px; font-weight: bold; vertical-align: middle; text-transform: uppercase;}
+        /* സിംഗിൾ ലൈൻ റാപ്പിംഗ് ഒഴിവാക്കാൻ */
+        .t-left { text-align: left !important; padding-left: 15px !important; vertical-align: middle;}
+        .prog-name-wrapper { display: -webkit-flex; display: flex; align-items: center; justify-content: flex-start; white-space: nowrap; overflow: hidden; width: 100%; }
+        .p-name-txt { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .s-tag { font-size: 9px; background: #334155; padding: 2px 4px; border-radius: 3px; color: #cbd5e1; margin-left: 5px; font-weight: bold; vertical-align: middle; text-transform: uppercase; flex-shrink: 0; white-space: nowrap; }
         .s-grp { background: #78350f; color: #fcd34d; }
+        .s-gen { background: #064e3b; color: #34d399; }
+        
         .pt-team-a { color: #fb7185; font-size: 17px !important; } 
         .pt-team-b { color: #818cf8; font-size: 17px !important; }
         .br-left { border-left: 2px solid #334155; }
@@ -167,20 +187,22 @@
             .cat-tname { font-size: 18px; }
             .cat-pts { font-size: 24px; }
 
-            /* Tables Mobile - Allows horizontal scrolling */
+            /* Tables Mobile */
             .no-scroll-wrapper { overflow-x: auto; overflow-y: auto;}
             .pt-table th, .pt-table td { font-size: 12px !important; padding: 4px; }
-            .t-left { font-size: 12px !important; }
+            .p-name-txt { font-size: 12px; max-width: 100px; }
+            .s-tag { font-size: 8px; padding: 1px 3px; }
             .pt-team-a, .pt-team-b { font-size: 13px !important; }
+            #fullscreen-btn { display: none; } /* Hide fullscreen button on mobile */
         }
     </style>
 </head>
 <body>
 
-    <!-- LOCAL AUDIO FILE FOR SCORE UPDATE -->
+    <!-- LOCAL AUDIO FILES -->
+    <!-- ഒരേ സൗണ്ട് തന്നെ രണ്ടാവശ്യങ്ങൾക്കും ഉപയോഗിക്കുന്നു -->
     <audio id="sound-score" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
-    <!-- PLEASANT MAGICAL CHIME FOR NEW RESULT -->
-    <audio id="sound-result" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
+    <audio id="sound-result" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
 
     <!-- Zero Gravity Background Elements -->
     <div class="zero-gravity-bg" id="zg-bg"></div>
@@ -190,6 +212,9 @@
         <button class="start-btn">Start Live Display</button>
         <p style="margin-top:20px; font-size:16px; color:#94a3b8; text-align:center; padding:0 20px;">TV റിമോട്ടിലോ സ്ക്രീനിലോ ക്ലിക്ക് ചെയ്യുക<br>(തനിയെ ഫുൾ സ്ക്രീൻ ആവും)</p>
     </div>
+
+    <!-- FULL SCREEN TOGGLE BUTTON -->
+    <button id="fullscreen-btn" onclick="toggleFullScreen()">⛶ Full Screen</button>
 
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
 
@@ -248,7 +273,7 @@
                     <div class="stat-label">ടീമുകൾ</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" style="font-size: 22px; padding-top: 5px; color: #fbbf24; font-weight: bold;">ഓറ ക്യാമ്പസ്</div>
+                    <div class="stat-value" style="font-size: 22px; padding-top: 5px; color: #fbbf24; font-weight: bold;">HIM 🫆മദ്രസ </div>
                     <div class="stat-label">വേദി</div>
                 </div>
             </div>
@@ -395,7 +420,7 @@
         }
         createZeroGravity();
         
-        // Anti-Sleep Hack (Keeps TV screen awake using a tiny invisible video stream)
+        // Anti-Sleep Hack (Keeps TV screen awake)
         function preventSleep() {
             try {
                 if ('wakeLock' in navigator && typeof navigator.wakeLock.request === 'function') { 
@@ -411,12 +436,17 @@
             } catch(e) {}
         }
 
+        // Full Screen Toggle Logic
         function toggleFullScreen() {
             var elem = document.documentElement;
             if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
                 if (elem.requestFullscreen) { elem.requestFullscreen(); }
                 else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
                 else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
+            } else {
+                if (document.exitFullscreen) { document.exitFullscreen(); }
+                else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
+                else if (document.msExitFullscreen) { document.msExitFullscreen(); }
             }
         }
 
@@ -545,9 +575,11 @@
             for (var p = 0; p < programList.length; p++) {
                 var tProg = programList[p];
                 var tName = tProg.name;
+                
+                // NO-WRAP TAGS CONSTRUCTION
                 var tTag = "<span class='s-tag'>" + tProg.type + "</span>";
-                if(tProg.isGroup) tTag += "<span class='s-tag s-grp'>👥 Group</span>";
-                if(tProg.cat === 'General') tTag += "<span class='s-tag' style='background:#064e3b;color:#34d399;'>General</span>";
+                if(tProg.isGroup) tTag += "<span class='s-tag s-grp'>Group</span>";
+                if(tProg.cat === 'General') tTag += "<span class='s-tag s-gen'>Gen</span>";
 
                 var tRes = null;
                 for(var j=0; j<state.results.length; j++) { if(state.results[j].progId === tProg.id) { tRes = state.results[j]; break; } }
@@ -579,8 +611,9 @@
                 var sB2 = b2 !== "-" ? "color:#cbd5e1; font-size:18px;" : "color:#334155;";
                 var sB3 = b3 !== "-" ? "color:#d97706; font-size:18px;" : "color:#334155;";
 
+                // ONE LINE WRAPPER APPLIED
                 tbody += "<tr>" +
-                    "<td class='t-left' style='width:28%;'>" + tName + " " + tTag + "</td>" +
+                    "<td class='t-left' style='width:28%;'><div class='prog-name-wrapper'><span class='p-name-txt' title='" + tName + "'>" + tName + "</span>" + tTag + "</div></td>" +
                     "<td style='width:12%; " + sA1 + "'>" + a1 + "</td><td style='width:12%; " + sA2 + "'>" + a2 + "</td><td style='width:12%; " + sA3 + "'>" + a3 + "</td>" +
                     "<td class='br-left' style='width:12%; " + sB1 + "'>" + b1 + "</td><td style='width:12%; " + sB2 + "'>" + b2 + "</td><td style='width:12%; " + sB3 + "'>" + b3 + "</td>" +
                     "</tr>";
