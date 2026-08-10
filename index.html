@@ -2,11 +2,11 @@
 <html lang="ml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>മെഹ്ഫിലെ നൂർ 2026 - Result Display</title>
     
     <!-- Premium Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&display=swap" rel="stylesheet">
     
     <!-- Firebase & Confetti -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -23,18 +23,23 @@
         }
         .num-font { font-family: 'Outfit', sans-serif; }
         
-        /* New Logo Image Styling */
-        .fest-logo-img { height: 45px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6)); display: inline-block; margin: 0 5px; }
-        .fest-logo-img-small { height: 32px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6)); display: inline-block; margin: 0 5px; }
-
-        /* ZERO GRAVITY BACKGROUND EFFECT */
+        .fest-logo-img { 
+            height: 75px; /* Increased Size for TV/Desktop */
+            max-width: 100%;
+            object-fit: contain; 
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.6)); 
+            display: inline-block; 
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
         .zero-gravity-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; overflow: hidden; pointer-events: none;
         }
         .orb {
             position: absolute; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
             animation: floatOrb infinite linear; opacity: 0;
         }
         @keyframes floatOrb {
@@ -46,159 +51,165 @@
 
         #start-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
-            display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; 
-            -webkit-justify-content: center; justify-content: center; flex-direction: column; cursor: pointer;
+            background: rgba(2, 6, 23, 0.98); z-index: 9999;
+            display: flex; align-items: center; justify-content: center; 
+            flex-direction: column; cursor: pointer;
         }
-        .start-btn { background: #ec4899; color: white; padding: 20px 40px; font-size: 24px; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(236,72,153,0.5); transition: 0.3s;}
-        .start-btn:hover { transform: scale(1.05); }
-
+        .start-btn { 
+            background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; padding: 20px 40px; 
+            font-size: 24px; font-weight: bold; border-radius: 15px; border: none; cursor: pointer; 
+            text-transform: uppercase; box-shadow: 0 10px 30px rgba(236,72,153,0.4); transition: 0.3s;
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 15px 40px rgba(236,72,153,0.6); }
         #flash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9998; opacity: 0; pointer-events: none; }
 
         .view-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; padding: 15px 30px; -webkit-flex-direction: column; flex-direction: column;
-            animation: fadeIn 1s ease-in-out; overflow: hidden;
+            display: none; padding: 2vh 4vw; flex-direction: column;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow-y: auto; overflow-x: hidden;
+            scrollbar-width: none; /* Firefox */
         }
-        .view-active { display: -webkit-flex; display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .view-container::-webkit-scrollbar { display: none; } /* Chrome */
+        .view-active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.97) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        .header { text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px;}
+        .header { text-align: center; margin-bottom: 2vh; display: flex; align-items: center; justify-content: center; width: 100%;}
+        .page-title { text-align: center; font-size: clamp(14px, 2vw, 20px); color: #fbbf24; margin-bottom: 2vh; font-weight: bold; background: rgba(0,0,0,0.4); padding: 8px 15px; border-radius: 12px; text-transform: uppercase; letter-spacing: 2px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); display: inline-block; margin-left: auto; margin-right: auto;}
+
+        .dashboard-content { display: flex; justify-content: space-evenly; align-items: center; flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; gap: 20px;}
+        .team-block { text-align: center; width: 42%; background: rgba(15, 23, 42, 0.7); padding: 4vh 2vw; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px rgba(0,0,0,0.5); backdrop-filter: blur(10px);}
+        .team-name { font-size: clamp(24px, 4vw, 50px); font-weight: bold; margin-bottom: 10px; line-height: 1.2;}
+        .team-name.team-a { color: #fb7185; text-shadow: 0 0 25px rgba(251, 113, 133, 0.5); }
+        .team-name.team-b { color: #818cf8; text-shadow: 0 0 25px rgba(129, 140, 248, 0.5); }
+        .huge-points { font-size: clamp(60px, 15vw, 200px); font-weight: 900; line-height: 1; text-shadow: 0 15px 40px rgba(0,0,0,0.6); }
         
-        .page-title { text-align: center; font-size: 18px; color: #fbbf24; margin-bottom: 10px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;}
+        .vs-circle { background: #020617; border: 4px solid #1e293b; border-radius: 50%; width: clamp(50px, 8vw, 90px); height: clamp(50px, 8vw, 90px); display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 3vw, 28px); font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.3); flex-shrink: 0;}
 
-        /* --- PAGE 1: TOTAL SCORE --- */
-        .dashboard-content { display: -webkit-flex; display: flex; -webkit-justify-content: space-around; justify-content: space-around; -webkit-align-items: center; align-items: center; flex: 1; padding: 0 50px; }
-        .team-block { text-align: center; width: 40%; background: rgba(15, 23, 42, 0.6); padding: 30px; border-radius: 30px; border: 2px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .team-name { font-size: 45px; font-weight: bold; margin-bottom: 5px; }
-        .team-name.team-a { color: #fb7185; text-shadow: 0 0 20px rgba(251, 113, 133, 0.4); }
-        .team-name.team-b { color: #818cf8; text-shadow: 0 0 20px rgba(129, 140, 248, 0.4); }
-        .huge-points { font-size: 13vw; font-weight: 900; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .vs-circle { background: #0f172a; border: 5px solid #1e293b; border-radius: 50%; width: 80px; height: 80px; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 24px; font-weight: 900; color: #64748b; font-style: italic; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+        .stats-row { display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(10px, 2vw, 30px); margin-top: 3vh; padding-bottom: 2vh; width: 100%; }
+        .stat-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 15px 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); flex: 1; min-width: 140px; max-width: 250px;}
+        .stat-value { font-size: clamp(24px, 3vw, 40px); font-weight: 900; color: #34d399; line-height: 1.2; text-shadow: 0 0 15px rgba(52,211,153,0.4);}
+        .stat-label { font-size: clamp(10px, 1.2vw, 14px); color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px;}
 
-        .stats-row { display: -webkit-flex; display: flex; justify-content: center; gap: 30px; margin-top: 20px; padding-bottom: 10px; }
-        .stat-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 180px; }
-        .stat-value { font-size: 35px; font-weight: 900; color: #34d399; line-height: 1.2; text-shadow: 0 0 10px rgba(52,211,153,0.3);}
-        .stat-label { font-size: 14px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;}
-
-        /* --- PAGE 2: RESULTS --- */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; align-content: start; overflow-y: auto; padding-right:10px; }
-        .results-grid::-webkit-scrollbar { display: none; }
-        .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; position: relative; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; flex: 1; align-content: start; width: 100%; max-width: 1400px; margin: 0 auto; }
+        .res-card { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 20px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.3);}
         
-        .res-card.newest { grid-column: span 2; border-color: #10b981; box-shadow: 0 0 25px rgba(16,185,129,0.3); background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.95) 100%); padding: 20px; display: flex; flex-direction: column; justify-content: center; }
-        .res-card.newest .rc-title { font-size: 28px; border-bottom: 2px solid rgba(16,185,129,0.3); padding-bottom: 10px; margin-bottom: 12px; padding-right: 120px; }
-        .res-card.newest .rc-cat { font-size: 16px; padding: 4px 10px; background: #064e3b; color: #34d399; }
-        .res-card.newest .rc-row { padding: 10px 18px; margin-bottom: 8px; }
-        .res-card.newest .rc-name { font-size: 24px; }
-        .res-card.newest .rc-team { font-size: 15px; padding: 5px 10px; }
+        .res-card.newest { grid-column: 1 / -1; border-color: #10b981; box-shadow: 0 0 35px rgba(16,185,129,0.25); background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.95) 100%); padding: 25px; display: flex; flex-direction: column; justify-content: center; }
+        .res-card.newest .rc-title { font-size: clamp(20px, 2.5vw, 32px); border-bottom: 2px solid rgba(16,185,129,0.3); padding-bottom: 12px; margin-bottom: 15px; padding-right: 120px; }
+        .res-card.newest .rc-cat { font-size: 14px; padding: 5px 12px; background: #064e3b; color: #34d399; border-radius: 8px;}
+        .res-card.newest .rc-row { padding: 12px 20px; margin-bottom: 10px; border-radius: 12px;}
+        .res-card.newest .rc-name { font-size: clamp(18px, 2vw, 26px); }
 
-        .corner-ribbon { width: 140px; height: 140px; overflow: hidden; position: absolute; top: 0; right: 0; z-index: 10; border-radius: 0 15px 0 0; pointer-events: none; }
-        .corner-ribbon::before { content: '✨ LATEST'; position: absolute; display: block; width: 200px; padding: 8px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow: 0 5px 10px rgba(0,0,0,0.4); color: #78350f; font-weight: 900; font-size: 14px; text-align: center; right: -48px; top: 28px; transform: rotate(45deg); letter-spacing: 2px; }
+        .corner-ribbon { width: 150px; height: 150px; overflow: hidden; position: absolute; top: -5px; right: -5px; z-index: 10; border-radius: 0 20px 0 0; pointer-events: none; }
+        .corner-ribbon::before { content: '✨ LATEST'; position: absolute; display: block; width: 220px; padding: 10px 0; background: linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow: 0 5px 15px rgba(0,0,0,0.5); color: #78350f; font-weight: 900; font-size: 13px; text-align: center; right: -55px; top: 32px; transform: rotate(45deg); letter-spacing: 3px; }
 
-        .rc-title { font-size: 20px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        .rc-cat { font-size: 12px; background: #1e293b; padding: 3px 6px; border-radius: 4px; color: #94a3b8; font-weight: bold; text-transform: uppercase;}
-        .rc-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
-        .rc-row.first { border-left: 5px solid #fbbf24; }
+        .rc-title { font-size: 18px; font-weight: bold; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .rc-cat { font-size: 11px; background: #1e293b; padding: 4px 8px; border-radius: 6px; color: #94a3b8; font-weight: bold; text-transform: uppercase;}
+        .rc-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; }
+        .rc-row.first { border-left: 5px solid #fbbf24; background: linear-gradient(90deg, rgba(251,191,36,0.1) 0%, rgba(0,0,0,0.4) 100%); }
         .rc-row.second { border-left: 5px solid #cbd5e1; }
         .rc-row.third { border-left: 5px solid #b45309; }
-        .rc-name { font-size: 18px; font-weight: bold; color: #f1f5f9; }
-        .rc-team { font-size: 12px; font-weight: bold; padding: 3px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); }
+        .rc-name { font-size: 16px; font-weight: bold; color: #f8fafc; }
+        .rc-team { font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.08); }
         .rc-team.a { color: #fb7185; } .rc-team.b { color: #818cf8; }
 
-        /* --- PAGE 3: CATEGORY SCORES --- */
-        .category-container { display: -webkit-flex; display: flex; justify-content: space-between; gap: 20px; flex: 1; align-items: center; padding-top: 10px; overflow-y: auto;}
-        .category-container::-webkit-scrollbar { display: none; }
-        .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px 20px; text-align: center; }
-        .cat-title { font-size: 30px; font-weight: bold; color: #fbbf24; margin-bottom: 25px; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
-        .cat-team-row { display: -webkit-flex; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 12px; }
-        .cat-tname { font-size: 22px; font-weight: bold; }
+        .category-container { display: flex; flex-direction: column; justify-content: center; gap: 2vh; flex: 1; width: 100%; max-width: 900px; margin: 0 auto;}
+        @media (min-width: 769px) { .category-container { flex-direction: row; } }
+        .cat-box { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 3vh 2vw; text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+        .cat-title { font-size: clamp(20px, 2.5vw, 32px); font-weight: bold; color: #fbbf24; margin-bottom: 3vh; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; letter-spacing: 1px;}
+        .cat-team-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 15px 25px; border-radius: 15px; }
+        .cat-tname { font-size: clamp(16px, 2vw, 24px); font-weight: bold; }
         .cat-tname.a { color: #fb7185; } .cat-tname.b { color: #818cf8; }
-        .cat-pts { font-size: 35px; font-weight: 900; color: #fff; }
+        .cat-pts { font-size: clamp(28px, 3vw, 40px); font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
 
-        /* --- POINT TABLES --- */
-        .table-container { background: rgba(15, 23, 42, 0.8); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; overflow: hidden; }
-        .pt-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        .pt-header { background: rgba(0,0,0,0.8); border-radius: 10px 10px 0 0; }
-        .pt-table th, .pt-table td { padding: 4px 6px; text-align: center; font-size: 16px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #334155; padding: 6px;}
+        .table-container { background: rgba(15, 23, 42, 0.85); border-radius: 20px; padding: 0; border: 1px solid rgba(255,255,255,0.1); flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; max-width: 1200px; margin: 0 auto; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        .pt-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        .pt-table thead { position: sticky; top: 0; z-index: 10; }
+        .pt-header th { background: #020617; } /* Solid background for sticky header */
+        .pt-table th, .pt-table td { padding: 8px 10px; text-align: center; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pt-table th { color: #94a3b8; text-transform: uppercase; font-size: 12px; border-bottom: 2px solid #334155; padding: 12px 10px; letter-spacing: 0.5px;}
         
-        .no-scroll-wrapper { flex: 1; background: rgba(0,0,0,0.4); border-radius: 0 0 10px 10px; overflow: hidden; }
+        .no-scroll-wrapper { flex: 1; border-radius: 20px; overflow-y: auto; overflow-x: auto; scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+        .no-scroll-wrapper::-webkit-scrollbar { width: 6px; height: 6px; }
+        .no-scroll-wrapper::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 10px; }
         
-        .t-left { text-align: left !important; padding-left: 15px !important; vertical-align: middle;}
-        .prog-name-wrapper { display: -webkit-flex; display: flex; align-items: center; justify-content: flex-start; white-space: nowrap; overflow: hidden; width: 100%; }
-        .p-name-txt { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-        .s-tag { font-size: 9px; background: #334155; padding: 2px 4px; border-radius: 3px; color: #cbd5e1; margin-left: 5px; font-weight: bold; vertical-align: middle; text-transform: uppercase; flex-shrink: 0; white-space: nowrap; }
-        .s-grp { background: #78350f; color: #fcd34d; }
-        .s-gen { background: #064e3b; color: #34d399; }
+        .t-left { text-align: left !important; padding-left: 20px !important; vertical-align: middle;}
+        .prog-name-wrapper { display: flex; align-items: center; justify-content: flex-start; white-space: nowrap; overflow: hidden; width: 100%; }
+        .p-name-txt { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; color: #f1f5f9;}
+        .s-tag { font-size: 9px; background: #334155; padding: 3px 5px; border-radius: 4px; color: #cbd5e1; margin-left: 8px; font-weight: bold; vertical-align: middle; text-transform: uppercase; flex-shrink: 0; white-space: nowrap; letter-spacing: 0.5px;}
+        .s-grp { background: #78350f; color: #fcd34d; border: 1px solid #92400e;}
+        .s-gen { background: #064e3b; color: #34d399; border: 1px solid #047857;}
         
-        .pt-team-a { color: #fb7185; font-size: 17px !important; } 
-        .pt-team-b { color: #818cf8; font-size: 17px !important; }
+        .pt-team-a { color: #fb7185; font-size: 16px !important; } 
+        .pt-team-b { color: #818cf8; font-size: 16px !important; }
         .br-left { border-left: 2px solid #334155; }
+        
+        .pt-table tr:hover { background: rgba(255,255,255,0.03); }
 
-        #toast { position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 15px 30px; border-radius: 10px; font-size: 20px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
+        #toast { position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px 30px; border-radius: 12px; font-size: 18px; font-weight: bold; transform: translateY(-150px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 10px 30px rgba(16,185,129,0.4); border: 1px solid rgba(255,255,255,0.2); }
         #toast.show { transform: translateY(0); }
 
-        /* --- FULL SCREEN GALLERY OVERLAY --- */
         #gallery-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9500; display: none; opacity: 0;
             transition: opacity 1s ease-in-out;
         }
         .gallery-media {
-            width: 100%; height: 100%; object-fit: contain;
+            width: 100%; height: 100%; object-fit: cover;
             position: absolute; top: 0; left: 0; opacity: 0;
             transition: opacity 1.5s ease-in-out;
         }
         .gallery-media.active { opacity: 1; }
         .gallery-badge {
             position: absolute; bottom: 40px; right: 40px;
-            background: rgba(0,0,0,0.7); color: #fff; padding: 15px 30px;
+            background: rgba(0,0,0,0.8); color: #fff; padding: 15px 30px;
             border-radius: 15px; font-size: 24px; font-weight: bold;
-            border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);
             display: flex; align-items: center; gap: 15px; z-index: 9600;
         }
 
-        /* ================= MOBILE RESPONSIVE CSS ================= */
         @media (max-width: 768px) {
-            .view-container { padding: 10px; overflow-y: auto;}
-            .header img { height: 25px !important; }
-            .page-title { font-size: 14px; padding: 5px; margin-bottom: 10px; }
+            .fest-logo-img { height: 45px; } /* Scaled down logo for mobile */
+            .view-container { padding: 15px 10px; }
+            .header { margin-bottom: 15px; }
+            .page-title { margin-bottom: 15px; padding: 6px 12px; font-size: 12px;}
             
-            .dashboard-content { flex-direction: column; padding: 5px; gap: 10px; }
-            .team-block { width: 100%; padding: 20px; border-radius: 20px;}
-            .team-name { font-size: 30px; }
-            .huge-points { font-size: 25vw; }
-            .vs-circle { width: 45px; height: 45px; font-size: 14px; margin: 5px 0; }
-            .stats-row { flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-            .stat-box { min-width: 45%; padding: 10px; flex: 1;}
-            .stat-value { font-size: 22px; }
-            .stat-label { font-size: 11px; }
+            /* Dashboard Mobile */
+            .dashboard-content { flex-direction: column; gap: 15px; justify-content: center; padding: 0 10px;}
+            .team-block { width: 100%; padding: 25px 15px; border-radius: 25px;}
+            .vs-circle { margin: 0; width: 45px; height: 45px; font-size: 14px; border-width: 3px; position: absolute; z-index: 10;}
+            .stats-row { gap: 10px; margin-top: 20px;}
+            .stat-box { min-width: 45%; padding: 12px; border-radius: 12px;}
+            
+            /* Results Grid Mobile */
+            .results-grid { grid-template-columns: 1fr; gap: 15px; }
+            .res-card.newest { padding: 15px; border-radius: 15px;}
+            .res-card.newest .rc-title { padding-right: 0; border-bottom: 1px solid rgba(16,185,129,0.3); font-size: 18px;}
+            .corner-ribbon { transform: scale(0.65); transform-origin: top right; right: -10px; top: -10px;}
+            .rc-name { font-size: 14px; }
+            .rc-row { padding: 8px 12px; }
 
-            .results-grid { grid-template-columns: 1fr; }
-            .res-card.newest { grid-column: span 1; padding: 15px; }
-            .res-card.newest .rc-title { font-size: 20px; padding-right: 0; }
-            .res-card.newest .rc-name { font-size: 20px; }
-            .corner-ribbon { transform: scale(0.6); transform-origin: top right; }
-
-            .category-container { flex-direction: column; }
-            .cat-box { width: 100%; padding: 15px; margin-bottom: 10px;}
-            .cat-title { font-size: 20px; margin-bottom: 15px; }
-            .cat-team-row { padding: 10px 15px; }
-            .cat-tname { font-size: 18px; }
-            .cat-pts { font-size: 24px; }
-
-            .no-scroll-wrapper { overflow-x: auto; overflow-y: auto;}
-            .pt-table th, .pt-table td { font-size: 12px !important; padding: 4px; }
-            .p-name-txt { font-size: 12px; max-width: 100px; }
-            .s-tag { font-size: 8px; padding: 1px 3px; }
-            .pt-team-a, .pt-team-b { font-size: 13px !important; }
+            /* Tables Mobile */
+            .table-container { padding: 0; border-radius: 15px;}
+            .pt-table { min-width: 600px; } /* Ensures horizontal scroll works */
+            .pt-table th, .pt-table td { padding: 6px 8px; font-size: 13px; }
+            .p-name-txt { max-width: 140px; font-size: 13px; }
+            .s-tag { font-size: 8px; padding: 2px 4px; margin-left: 4px;}
+            .pt-team-a, .pt-team-b { font-size: 14px !important; }
+            .gallery-badge { bottom: 20px; right: 20px; padding: 10px 20px; font-size: 16px; border-radius: 10px;}
+        }
+        
+        /* Landscape Mobile Fix */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .dashboard-content { flex-direction: row; }
+            .team-block { padding: 15px; }
+            .huge-points { font-size: 40px; }
+            .stats-row { display: none; } /* Hide stats to fit scores */
         }
     </style>
 </head>
 <body ondblclick="triggerGalleryManually()">
 
-    <!-- AUDIO FILES -->
     <audio id="sound-score" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
     <audio id="sound-result" src="mixkit-sci-fi-reject-notification-896.wav" preload="auto"></audio>
 
@@ -207,18 +218,19 @@
 
     <div id="start-overlay" onclick="startApp()">
         <button class="start-btn">Start Live Display</button>
-        <p style="margin-top:20px; font-size:16px; color:#94a3b8; text-align:center; padding:0 20px;">TV റിമോട്ടിലോ സ്ക്രീനിലോ ക്ലിക്ക് ചെയ്യുക<br>(തനിയെ ഫുൾ സ്ക്രീൻ ആവും)</p>
+        <p style="margin-top:25px; font-size:16px; color:#94a3b8; text-align:center; padding:0 20px; font-weight: bold; letter-spacing: 1px;">
+            ടിവിയിലോ ഫോണിലോ സ്ക്രീനിൽ ക്ലിക്ക് ചെയ്യുക<br>
+            <span style="font-size:13px; font-weight:normal; color:#64748b; margin-top: 5px; display:inline-block;">(തനിയെ ഫുൾ സ്ക്രീൻ ആവും)</span>
+        </p>
     </div>
 
-    <!-- FEST GALLERY OVERLAY -->
     <div id="gallery-overlay">
-        <!-- Media placeholders created dynamically in JS -->
         <div id="gallery-media-container"></div>
         <div class="gallery-badge">
             <span>📸</span> 
             <div>
-                <div style="font-size: 12px; color: #fbbf24; text-transform: uppercase; letter-spacing: 2px;">Fest Gallery</div>
-                <div style="font-size: 20px; line-height: 1;">മെഹ്ഫിലെ നൂർ 2026</div>
+                <div style="font-size: 10px; color: #fbbf24; text-transform: uppercase; letter-spacing: 2px;">Fest Gallery</div>
+                <div style="font-size: 16px; line-height: 1;">മെഹ്ഫിലെ നൂർ 2026</div>
             </div>
         </div>
     </div>
@@ -229,9 +241,7 @@
         
         <!-- PAGE 1: SCORE & STATS -->
         <div id="view-1" class="view-container view-active">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
             
             <div class="dashboard-content">
@@ -250,24 +260,20 @@
                 <div class="stat-box"><div class="stat-value num-font" id="stat-programs">0</div><div class="stat-label">മത്സരങ്ങൾ</div></div>
                 <div class="stat-box"><div class="stat-value num-font" id="stat-candidates">0</div><div class="stat-label">കുട്ടികൾ</div></div>
                 <div class="stat-box"><div class="stat-value num-font" id="stat-teams">2</div><div class="stat-label">ടീമുകൾ</div></div>
-                <div class="stat-box"><div class="stat-value" style="font-size: 22px; padding-top: 5px; color: #fbbf24; font-weight: bold;">ഓറ ക്യാമ്പസ്</div><div class="stat-label">വേദി</div></div>
+                <div class="stat-box"><div class="stat-value" style="font-size: clamp(18px, 2.5vw, 24px); padding-top: 5px; color: #fbbf24; font-weight: bold;">ഓറ ക്യാമ്പസ്</div><div class="stat-label">വേദി</div></div>
             </div>
         </div>
 
         <!-- PAGE 2: LATEST RESULTS -->
         <div id="view-2" class="view-container">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">ഏറ്റവും പുതിയ ഫലങ്ങൾ (LATEST RESULTS)</div>
             <div class="results-grid" id="results-grid-container"></div>
         </div>
 
         <!-- PAGE 3: CATEGORY SCORES -->
         <div id="view-3" class="view-container">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">വിഭാഗം തിരിച്ചുള്ള പോയിന്റുകൾ (CATEGORY SCORES)</div>
             <div class="category-container">
                 <div class="cat-box">
@@ -290,97 +296,98 @@
 
         <!-- PAGE 4: JUNIOR TABLE -->
         <div id="view-4" class="view-container">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-4">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-4">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
-                <div class="no-scroll-wrapper"><table class="pt-table"><tbody id="table-body-junior"></tbody></table></div>
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-4">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-4">Team B</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                                <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-junior"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- PAGE 5: SENIOR + GENERAL (STAGE) -->
         <div id="view-5" class="view-container">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (STAGE)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-5">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-5">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
-                <div class="no-scroll-wrapper"><table class="pt-table"><tbody id="table-body-senior-stage"></tbody></table></div>
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-5">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-5">Team B</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                                <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-senior-stage"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- PAGE 6: SENIOR + GENERAL (NON-STAGE) -->
         <div id="view-6" class="view-container">
-            <div class="header">
-                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
-            </div>
+            <div class="header"><img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026"></div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (NON-STAGE)</div>
             <div class="table-container">
-                <table class="pt-table pt-header">
-                    <thead>
-                        <tr>
-                            <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
-                            <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-6">Team A</th>
-                            <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-6">Team B</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                            <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
-                        </tr>
-                    </thead>
-                </table>
-                <div class="no-scroll-wrapper"><table class="pt-table"><tbody id="table-body-senior-nonstage"></tbody></table></div>
+                <div class="no-scroll-wrapper">
+                    <table class="pt-table">
+                        <thead class="pt-header">
+                            <tr>
+                                <th rowspan="2" class="t-left" style="width: 28%; vertical-align: middle;">മത്സരം (Program)</th>
+                                <th colspan="3" class="pt-team-a" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamA-6">Team A</th>
+                                <th colspan="3" class="pt-team-b br-left" style="width: 36%; border-bottom: 2px solid #334155;" id="th-teamB-6">Team B</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                                <th class="br-left" style="width: 12%;">🥇 1st</th><th style="width: 12%;">🥈 2nd</th><th style="width: 12%;">🥉 3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-senior-nonstage"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-
     </div>
 
     <script>
         var appStarted = false;
 
-        // Zero Gravity Background Generator
         function createZeroGravity() {
             var bg = document.getElementById('zg-bg');
             var colors = ['#ec4899', '#8b5cf6', '#fbbf24', '#34d399', '#fb7185'];
-            for(var i=0; i<25; i++) {
+            // Determine number of orbs based on screen width for performance
+            var numOrbs = window.innerWidth < 768 ? 15 : 30; 
+            
+            for(var i=0; i<numOrbs; i++) {
                 var orb = document.createElement('div');
                 orb.className = 'orb';
-                var size = Math.random() * 80 + 30; // 30px to 110px
+                var size = Math.random() * 90 + 30; 
                 orb.style.width = size + 'px';
                 orb.style.height = size + 'px';
                 orb.style.left = Math.random() * 100 + 'vw';
                 
                 var color = colors[Math.floor(Math.random() * colors.length)];
-                orb.style.background = 'radial-gradient(circle, ' + color + '22 0%, transparent 70%)';
+                orb.style.background = 'radial-gradient(circle, ' + color + '33 0%, transparent 70%)';
                 
-                orb.style.animationDuration = (Math.random() * 15 + 15) + 's'; // 15s to 30s
+                orb.style.animationDuration = (Math.random() * 15 + 20) + 's'; 
                 orb.style.animationDelay = (Math.random() * 15) + 's';
                 
                 bg.appendChild(orb);
@@ -388,7 +395,7 @@
         }
         createZeroGravity();
         
-        // Anti-Sleep Hack
+        // Anti-Sleep Hack for TV/Mobile displays
         function preventSleep() {
             try {
                 if ('wakeLock' in navigator && typeof navigator.wakeLock.request === 'function') { 
@@ -410,20 +417,17 @@
                 if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
                     if (elem.requestFullscreen) { 
                         var promise = elem.requestFullscreen(); 
-                        if(promise) promise.catch(function(e){ console.log("Fullscreen blocked by permissions", e); });
+                        if(promise) promise.catch(function(e){ console.log("Fullscreen ignored"); });
                     }
                     else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
                     else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
                 }
-            } catch (e) {
-                console.log("Fullscreen not supported or blocked.");
-            }
+            } catch (e) { console.log("Fullscreen not supported"); }
         }
 
         function unlockAudio(audioElem) {
             if(!audioElem) return;
             audioElem.muted = true;
-            
             try {
                 var playPromise = audioElem.play();
                 if (playPromise !== undefined && typeof playPromise.then === 'function') {
@@ -467,10 +471,10 @@
             setTimeout(function() { flash.style.transition = 'opacity 0.8s ease-out'; flash.style.opacity = '0'; }, 50);
             
             try {
-                var duration = 1.5 * 1000; var end = Date.now() + duration;
+                var duration = 2 * 1000; var end = Date.now() + duration;
                 (function frame() {
-                    confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
-                    confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#ec4899', '#818cf8'] });
+                    confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#ec4899', '#818cf8', '#34d399'] });
+                    confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#ec4899', '#818cf8', '#34d399'] });
                     if (Date.now() < end) { requestAnimationFrame(frame); }
                 }());
             } catch(e) {}
@@ -487,7 +491,6 @@
             setTimeout(function(){ t.className = ''; }, 5000);
         }
 
-        /* --- FEST GALLERY LOGIC (Plays every 10 mins) --- */
         var galleryItems = []; 
         var currentGalleryIndex = 0;
         var galleryActive = false;
@@ -496,10 +499,9 @@
         // 10 minutes interval timer (600,000 ms)
         var galleryTriggerInterval = setInterval(triggerGallery, 600000); 
 
-        // Manually trigger on double click
         function triggerGalleryManually() {
             if(galleryActive) return;
-            clearInterval(galleryTriggerInterval); // reset timer
+            clearInterval(galleryTriggerInterval); 
             galleryTriggerInterval = setInterval(triggerGallery, 600000);
             triggerGallery();
         }
@@ -509,13 +511,11 @@
             galleryActive = true;
             document.getElementById('gallery-overlay').style.display = 'block';
             
-            // Fade in overlay
             setTimeout(function() { document.getElementById('gallery-overlay').style.opacity = '1'; }, 100);
 
             var container = document.getElementById('gallery-media-container');
-            container.innerHTML = ''; // clear old
+            container.innerHTML = ''; 
 
-            // Build elements based on config
             galleryItems.forEach(function(item, index) {
                 var el;
                 if(item.type === 'video') {
@@ -525,8 +525,7 @@
                     el = document.createElement('img');
                     el.src = item.url;
                 }
-                el.className = 'gallery-media';
-                el.id = 'g-media-' + index;
+                el.className = 'gallery-media'; el.id = 'g-media-' + index;
                 container.appendChild(el);
             });
 
@@ -536,7 +535,6 @@
 
         function playNextGalleryItem() {
             if(currentGalleryIndex >= galleryItems.length) {
-                // End of gallery -> Return to TV display
                 document.getElementById('gallery-overlay').style.opacity = '0';
                 setTimeout(function() { 
                     document.getElementById('gallery-overlay').style.display = 'none'; 
@@ -548,19 +546,15 @@
             var item = galleryItems[currentGalleryIndex];
             var el = document.getElementById('g-media-' + currentGalleryIndex);
             
-            // Hide all
             var allMedia = document.querySelectorAll('.gallery-media');
             allMedia.forEach(function(m) { 
                 m.classList.remove('active'); 
                 if(m.tagName === 'VIDEO') m.pause(); 
             });
             
-            // Show current
             if(el) {
                 el.classList.add('active');
-                if(item.type === 'video') {
-                    try { el.play().catch(function(e){}); } catch(e){}
-                }
+                if(item.type === 'video') { try { el.play().catch(function(e){}); } catch(e){} }
             }
 
             currentGalleryIndex++;
@@ -570,7 +564,6 @@
             galleryTimer = setTimeout(playNextGalleryItem, duration);
         }
 
-        // MAIN TV CAROUSEL VIEW LOGIC (Plays every 15s)
         var currentViewIndex = 1;
         var totalViews = 6;
         
@@ -582,7 +575,6 @@
             document.getElementById('view-' + currentViewIndex).className = 'view-container view-active';
         }, 15000); 
 
-        // FIREBASE SETUP
         var firebaseConfig = {
             apiKey: "AIzaSyCIbvk4teIJ6AlfaXbFgDMgCWpnekNwmx8",
             authDomain: "pullani-6a39b.firebaseapp.com",
@@ -608,7 +600,7 @@
                     var d = snap.data(); 
                     if (d.teams) state.teams = d.teams; 
                     if (d.programs) state.programs = d.programs; 
-                    if (d.gallery) galleryItems = d.gallery; // Fetch Gallery settings
+                    if (d.gallery) galleryItems = d.gallery; 
                     renderAll(); 
                 }
             });
@@ -622,7 +614,7 @@
 
         function generateTableRows(programList) {
             var tbody = "";
-            if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b; padding:20px;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
+            if (programList.length === 0) return "<tr><td colspan='7' style='color:#64748b; padding:30px; text-align:center;'>പ്രോഗ്രാമുകൾ ചേർത്തിട്ടില്ല</td></tr>";
             
             for (var p = 0; p < programList.length; p++) {
                 var tProg = programList[p];
@@ -640,8 +632,7 @@
                     var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 10 : 5; var tT = tProg.isGroup ? 5 : 3;
                     
                     var checkPts = function(ids, pts) {
-                        var arr = [];
-                        if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
+                        var arr = []; if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
                         for(var k=0; k<arr.length; k++) {
                             var cand = getCand(arr[k]);
                             if(cand) {
@@ -653,12 +644,12 @@
                     checkPts(tRes.first, tF); checkPts(tRes.second, tS); checkPts(tRes.third, tT);
                 }
 
-                var sA1 = a1 !== "-" ? "color:#fbbf24; font-size:20px;" : "color:#334155;";
-                var sA2 = a2 !== "-" ? "color:#cbd5e1; font-size:18px;" : "color:#334155;";
-                var sA3 = a3 !== "-" ? "color:#d97706; font-size:18px;" : "color:#334155;";
-                var sB1 = b1 !== "-" ? "color:#fbbf24; font-size:20px;" : "color:#334155;";
-                var sB2 = b2 !== "-" ? "color:#cbd5e1; font-size:18px;" : "color:#334155;";
-                var sB3 = b3 !== "-" ? "color:#d97706; font-size:18px;" : "color:#334155;";
+                var sA1 = a1 !== "-" ? "color:#fbbf24; font-size:18px;" : "color:#334155;";
+                var sA2 = a2 !== "-" ? "color:#cbd5e1; font-size:16px;" : "color:#334155;";
+                var sA3 = a3 !== "-" ? "color:#d97706; font-size:16px;" : "color:#334155;";
+                var sB1 = b1 !== "-" ? "color:#fbbf24; font-size:18px;" : "color:#334155;";
+                var sB2 = b2 !== "-" ? "color:#cbd5e1; font-size:16px;" : "color:#334155;";
+                var sB3 = b3 !== "-" ? "color:#d97706; font-size:16px;" : "color:#334155;";
 
                 tbody += "<tr>" +
                     "<td class='t-left' style='width:28%;'><div class='prog-name-wrapper'><span class='p-name-txt' title='" + tName + "'>" + tName + "</span>" + tTag + "</div></td>" +
@@ -722,9 +713,9 @@
             document.getElementById('cat-g-a').innerText = stats.teamA.general; document.getElementById('cat-g-b').innerText = stats.teamB.general;
 
             var resHtml = "";
-            if (sortedRes.length === 0) resHtml = "<h2 style='color:#64748b; grid-column:span 2; text-align:center;'>ഫലങ്ങൾ വന്നിട്ടില്ല...</h2>";
+            if (sortedRes.length === 0) resHtml = "<div style='color:#64748b; grid-column:1/-1; text-align:center; padding: 40px; font-size: 20px;'>ഫലങ്ങൾ വന്നിട്ടില്ല...</div>";
             
-            for(var r=0; r<Math.min(sortedRes.length, 5); r++) {
+            for(var r=0; r<Math.min(sortedRes.length, 6); r++) {
                 var latestRes = sortedRes[r]; var latestProg = getProg(latestRes.progId);
                 var pName = latestProg ? latestProg.name : '-'; var pCat = latestProg ? latestProg.cat : '';
                 var isNew = (r === 0) ? " newest" : "";
