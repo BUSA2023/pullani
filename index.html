@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>മെഹ്ഫിലെ നൂർ 2K26 - Live Result</title>
+    <title>മെഹ്ഫിലെ നൂർ 2026 - Result Display</title>
     
     <!-- Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;700;800&family=Outfit:wght@400;800;900&family=Baloo+Chettan+2:wght@500;700;800&display=swap" rel="stylesheet">
@@ -22,10 +22,10 @@
             color: #ffffff; overflow: hidden; height: 100vh; width: 100vw;
         }
         .num-font { font-family: 'Outfit', sans-serif; }
-        .fest-title { font-family: 'Baloo Chettan 2', sans-serif; font-weight: 800; }
         
         /* New Logo Image Styling */
         .fest-logo-img { height: 45px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6)); display: inline-block; margin: 0 5px; }
+        .fest-logo-img-small { height: 32px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6)); display: inline-block; margin: 0 5px; }
 
         /* ZERO GRAVITY BACKGROUND EFFECT */
         .zero-gravity-bg {
@@ -63,8 +63,7 @@
         .view-active { display: -webkit-flex; display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        .header { text-align: center; margin-bottom: 10px; }
-        .header h1 { font-size: 38px; color: #f8fafc; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .header { text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px;}
         
         .page-title { text-align: center; font-size: 18px; color: #fbbf24; margin-bottom: 10px; font-weight: bold; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;}
 
@@ -147,7 +146,7 @@
             transition: opacity 1s ease-in-out;
         }
         .gallery-media {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100%; height: 100%; object-fit: contain;
             position: absolute; top: 0; left: 0; opacity: 0;
             transition: opacity 1.5s ease-in-out;
         }
@@ -157,14 +156,13 @@
             background: rgba(0,0,0,0.7); color: #fff; padding: 15px 30px;
             border-radius: 15px; font-size: 24px; font-weight: bold;
             border: 2px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-            display: flex; align-items: center; gap: 15px;
+            display: flex; align-items: center; gap: 15px; z-index: 9600;
         }
 
         /* ================= MOBILE RESPONSIVE CSS ================= */
         @media (max-width: 768px) {
             .view-container { padding: 10px; overflow-y: auto;}
-            .header h1 { font-size: 26px; }
-            .fest-logo-img { height: 30px; }
+            .header img { height: 25px !important; }
             .page-title { font-size: 14px; padding: 5px; margin-bottom: 10px; }
             
             .dashboard-content { flex-direction: column; padding: 5px; gap: 10px; }
@@ -220,7 +218,7 @@
             <span>📸</span> 
             <div>
                 <div style="font-size: 12px; color: #fbbf24; text-transform: uppercase; letter-spacing: 2px;">Fest Gallery</div>
-                <div style="font-size: 20px; line-height: 1;">മെഹ്ഫിലെ നൂർ 2K26</div>
+                <div style="font-size: 20px; line-height: 1;">മെഹ്ഫിലെ നൂർ 2026</div>
             </div>
         </div>
     </div>
@@ -232,11 +230,7 @@
         <!-- PAGE 1: SCORE & STATS -->
         <div id="view-1" class="view-container view-active">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">ടീം പോയിന്റുകൾ (TOTAL SCORE)</div>
             
@@ -263,11 +257,7 @@
         <!-- PAGE 2: LATEST RESULTS -->
         <div id="view-2" class="view-container">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">ഏറ്റവും പുതിയ ഫലങ്ങൾ (LATEST RESULTS)</div>
             <div class="results-grid" id="results-grid-container"></div>
@@ -276,11 +266,7 @@
         <!-- PAGE 3: CATEGORY SCORES -->
         <div id="view-3" class="view-container">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">വിഭാഗം തിരിച്ചുള്ള പോയിന്റുകൾ (CATEGORY SCORES)</div>
             <div class="category-container">
@@ -305,11 +291,7 @@
         <!-- PAGE 4: JUNIOR TABLE -->
         <div id="view-4" class="view-container">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - ജൂനിയർ (JUNIOR)</div>
             <div class="table-container">
@@ -333,11 +315,7 @@
         <!-- PAGE 5: SENIOR + GENERAL (STAGE) -->
         <div id="view-5" class="view-container">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (STAGE)</div>
             <div class="table-container">
@@ -361,11 +339,7 @@
         <!-- PAGE 6: SENIOR + GENERAL (NON-STAGE) -->
         <div id="view-6" class="view-container">
             <div class="header">
-                <h1 class="fest-title">
-                    <img src="3f525aa49a9d32ee7fe12d4b0617e9b9.png" class="fest-logo-img" alt="Mehfile">
-                    <img src="e83c3904b4c41f2dec518be4a5b072b5.png" class="fest-logo-img" alt="Noor">
-                    <span style="font-size: 24px; font-weight: 900; font-style: italic; margin-left: 5px;">2K26</span>
-                </h1>
+                <img src="98232f0908c9d480f91da32c8100c1d0.png" class="fest-logo-img" alt="Mehfile Noor 2026">
             </div>
             <div class="page-title">പോയിന്റ് ടേബിൾ - സീനിയർ & ജനറൽ (NON-STAGE)</div>
             <div class="table-container">
@@ -449,14 +423,17 @@
         function unlockAudio(audioElem) {
             if(!audioElem) return;
             audioElem.muted = true;
-            var playPromise = audioElem.play();
-            if (playPromise !== undefined && typeof playPromise.then === 'function') {
-                playPromise.then(function() {
+            
+            try {
+                var playPromise = audioElem.play();
+                if (playPromise !== undefined && typeof playPromise.then === 'function') {
+                    playPromise.then(function() {
+                        audioElem.pause(); audioElem.currentTime = 0; audioElem.muted = false;
+                    }).catch(function(err) {});
+                } else {
                     audioElem.pause(); audioElem.currentTime = 0; audioElem.muted = false;
-                }).catch(function(err) {});
-            } else {
-                audioElem.pause(); audioElem.currentTime = 0; audioElem.muted = false;
-            }
+                }
+            } catch(e){}
         }
 
         function startApp() {
@@ -514,7 +491,7 @@
         var galleryItems = []; 
         var currentGalleryIndex = 0;
         var galleryActive = false;
-        var galleryInterval;
+        var galleryTimer = null;
         
         // 10 minutes interval timer (600,000 ms)
         var galleryTriggerInterval = setInterval(triggerGallery, 600000); 
@@ -573,14 +550,24 @@
             
             // Hide all
             var allMedia = document.querySelectorAll('.gallery-media');
-            allMedia.forEach(function(m) { m.classList.remove('active'); if(m.tagName === 'VIDEO') m.pause(); });
+            allMedia.forEach(function(m) { 
+                m.classList.remove('active'); 
+                if(m.tagName === 'VIDEO') m.pause(); 
+            });
             
             // Show current
-            el.classList.add('active');
-            if(item.type === 'video') el.play();
+            if(el) {
+                el.classList.add('active');
+                if(item.type === 'video') {
+                    try { el.play().catch(function(e){}); } catch(e){}
+                }
+            }
 
             currentGalleryIndex++;
-            setTimeout(playNextGalleryItem, item.duration || 5000); // Default 5s per item
+            var duration = (item.duration || 5) * 1000;
+            
+            clearTimeout(galleryTimer);
+            galleryTimer = setTimeout(playNextGalleryItem, duration);
         }
 
         // MAIN TV CAROUSEL VIEW LOGIC (Plays every 15s)
