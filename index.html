@@ -155,6 +155,25 @@
             display: flex; align-items: center; gap: 15px; z-index: 100;
         }
 
+        /* NEW GALLERY BUTTONS FOR MOBILE */
+        #mobile-gallery-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            background: linear-gradient(135deg, #ec4899, #f59e0b); color: white;
+            border: none; border-radius: 30px; padding: 12px 20px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(236,72,153,0.5); z-index: 9000;
+            display: none; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        #mobile-gallery-btn:hover { transform: scale(1.05); }
+
+        #close-gallery-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(0,0,0,0.6); color: white; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%; width: 45px; height: 45px; font-size: 20px;
+            z-index: 9600; cursor: pointer; display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
         /* MOBILE FIXES */
         @media (max-width: 768px) {
             .view-container { padding: 10px; overflow-y: auto;}
@@ -173,10 +192,12 @@
             .p-name-txt { font-size: 13px; max-width: 150px; }
             .s-tag { font-size: 8px; padding: 2px 4px; }
             .pt-team-a, .pt-team-b { font-size: 14px !important; }
+
+            #mobile-gallery-btn { bottom: 15px; right: 15px; font-size: 14px; padding: 10px 15px; }
+            #close-gallery-btn { top: 15px; right: 15px; width: 35px; height: 35px; font-size: 16px; }
         }
     </style>
 </head>
-<!-- Removed double click to keep it strictly automatic -->
 <body>
 
     <!-- AUDIO FILES -->
@@ -193,6 +214,7 @@
 
     <!-- FEST GALLERY OVERLAY (Acts as an extra page automatically) -->
     <div id="gallery-overlay">
+        <button id="close-gallery-btn" onclick="closeGallery()">✖</button>
         <div id="gallery-media-container"></div>
         <div class="gallery-badge">
             <span>📸</span> 
@@ -206,6 +228,11 @@
     <div id="toast">പുതിയ അപ്ഡേറ്റ്!</div>
 
     <div id="app" style="display:none; width: 100%; height: 100%; position: relative;">
+        <!-- Mobile Gallery Button -->
+        <button id="mobile-gallery-btn" onclick="manualTriggerGallery()">
+            📸 Gallery
+        </button>
+
         <div id="view-1" class="view-container view-active">
             <div class="header">
                 <div class="flex items-center justify-center drop-shadow-lg mb-3" style="display:flex; justify-content:center; align-items:center; margin-bottom:15px;">
@@ -411,6 +438,7 @@
             toggleFullScreen(); preventSleep();
             document.getElementById('start-overlay').style.display = 'none';
             document.getElementById('app').style.display = 'block';
+            document.getElementById('mobile-gallery-btn').style.display = 'flex'; // Show mobile gallery button
             unlockAudio(document.getElementById('sound-score'));
             unlockAudio(document.getElementById('sound-result'));
             appStarted = true; 
@@ -452,18 +480,48 @@
             setTimeout(function(){ t.className = ''; }, 5000);
         }
 
-        // --- FEST GALLERY LOGIC (Plays automatically every 2 mins on Android TV) ---
+        // --- FEST GALLERY LOGIC ---
         var galleryItems = []; 
         var currentGalleryIndex = 0;
         var galleryActive = false;
         
-        // 2 minutes interval timer (120000 ms)
-        var galleryTriggerInterval = setInterval(triggerGallery, 120000); 
+        // Timer for auto-playing gallery (Only triggers automatically on big screens to not annoy mobile users)
+        var galleryTriggerInterval = setInterval(function() {
+            if (window.innerWidth > 768) {
+                triggerGallery();
+            }
+        }, 120000); 
+
+        function manualTriggerGallery() {
+            if (!galleryItems || galleryItems.length === 0) {
+                showToast("ചിത്രങ്ങൾ ലഭ്യമായിട്ടില്ല! (No media yet)");
+                return;
+            }
+            triggerGallery();
+        }
+
+        function closeGallery() {
+            var overlay = document.getElementById('gallery-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(function() { 
+                overlay.style.display = 'none'; 
+                galleryActive = false;
+                document.getElementById('close-gallery-btn').style.display = 'none';
+                
+                // Stop any playing video
+                var allMedia = document.querySelectorAll('.gallery-media');
+                allMedia.forEach(function(m) { 
+                    if(m.tagName === 'VIDEO') { m.pause(); } 
+                });
+            }, 500);
+        }
 
         function triggerGallery() {
             if (!galleryItems || galleryItems.length === 0 || galleryActive) return;
             galleryActive = true;
             document.getElementById('gallery-overlay').style.display = 'block';
+            document.getElementById('close-gallery-btn').style.display = 'flex'; // Show close button
+            
             setTimeout(function() { document.getElementById('gallery-overlay').style.opacity = '1'; }, 100);
 
             var container = document.getElementById('gallery-media-container');
@@ -474,10 +532,10 @@
                 if(item.type === 'video') {
                     el = document.createElement('video');
                     el.src = item.url; 
-                    el.muted = false; // Audio is unlocked by the "Start" button
+                    el.muted = false; 
                     el.controls = false; 
                     el.playsInline = true;
-                    el.preload = 'auto'; // SPEED STREAM FIX
+                    el.preload = 'auto'; 
                 } else {
                     el = document.createElement('img');
                     el.src = item.url;
@@ -492,9 +550,13 @@
         }
 
         function playNextGalleryItem() {
+            // Check if gallery was manually closed in the meantime
+            if (!galleryActive) return;
+
             if(currentGalleryIndex >= galleryItems.length) {
                 // Return to TV display loop
                 document.getElementById('gallery-overlay').style.opacity = '0';
+                document.getElementById('close-gallery-btn').style.display = 'none';
                 setTimeout(function() { 
                     document.getElementById('gallery-overlay').style.display = 'none'; 
                     galleryActive = false;
