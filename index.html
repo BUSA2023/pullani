@@ -653,7 +653,7 @@
                 var a1="-", a2="-", a3="-", b1="-", b2="-", b3="-";
 
                 if (tRes) {
-                    var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 10 : 5; var tT = tProg.isGroup ? 5 : 3;
+                    var tF = tProg.isGroup ? 15 : 10; var tS = tProg.isGroup ? 8 : 5; var tT = tProg.isGroup ? 5 : 3;
                     var checkPts = function(ids, pts) {
                         var arr = []; if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
                         for(var k=0; k<arr.length; k++) {
@@ -699,7 +699,7 @@
             for(var i=0; i<state.results.length; i++) {
                 var res = state.results[i]; var prog = getProg(res.progId);
                 var isGroup = prog ? prog.isGroup : false; var cat = prog ? prog.cat : 'General';
-                var fPts = isGroup ? 15 : 10; var sPts = isGroup ? 10 : 5; var tPts = isGroup ? 5 : 3;
+                var fPts = isGroup ? 15 : 10; var sPts = isGroup ? 8 : 5; var tPts = isGroup ? 5 : 3;
 
                 var addPts = function(ids, pts) {
                     var arr = []; if(Array.isArray(ids)) { arr = ids; } else if(ids) { arr = [ids]; }
@@ -768,3 +768,4 @@
     </script>
 </body>
 </html>
+
